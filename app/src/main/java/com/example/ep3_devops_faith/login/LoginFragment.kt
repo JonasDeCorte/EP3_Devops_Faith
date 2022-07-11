@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -24,11 +25,9 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private var cachedCredentials: Credentials? = null
     private var cachedUserProfile: UserProfile? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,13 +38,15 @@ class LoginFragment : Fragment() {
             getString(R.string.authClientId),
             getString(R.string.authDomain)
         )
-
         // Bind the button click with the login action
         binding = FragmentLoginBinding.inflate(layoutInflater)
         binding.buttonLogin.setOnClickListener { loginWithBrowser() }
         binding.buttonLogout.setOnClickListener { logout() }
         binding.buttonGetMetadata.setOnClickListener { getUserMetadata() }
         binding.buttonPatchMetadata.setOnClickListener { patchUserMetadata() }
+        binding.btnHome.setOnClickListener(
+            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeFragment)
+        )
         return binding.root
     }
 private fun updateUI() {
@@ -75,7 +76,6 @@ private fun loginWithBrowser() {
             override fun onFailure(exception: AuthenticationException) {
                 showSnackBar("Failure: ${exception.getCode()}")
             }
-
             override fun onSuccess(credentials: Credentials) {
                 cachedCredentials = credentials
                 showSnackBar("Success: ${credentials.accessToken}")
@@ -95,7 +95,6 @@ private fun logout() {
                 cachedUserProfile = null
                 updateUI()
             }
-
             override fun onFailure(exception: AuthenticationException) {
                 updateUI()
                 showSnackBar("Failure: ${exception.getCode()}")
@@ -113,7 +112,6 @@ private fun showUserProfile() {
             override fun onFailure(exception: AuthenticationException) {
                 showSnackBar("Failure: ${exception.getCode()}")
             }
-
             override fun onSuccess(profile: UserProfile) {
                 cachedUserProfile = profile
                 updateUI()
