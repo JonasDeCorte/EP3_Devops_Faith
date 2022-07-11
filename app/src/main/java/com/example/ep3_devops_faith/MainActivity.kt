@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onSuccess(profile: UserProfile) {
-                    cachedUserProfile = profile;
+                    cachedUserProfile = profile
                     updateUI()
                 }
             })
