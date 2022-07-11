@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">EP3_Devops_Faith</string>
-    <string name="com_auth0_client_id">1ZepKwkI3cpx4jgE6PBZR6Y3foosefle}</string>
-    <string name="com_auth0_domain">dev-xoy1aufd.us.auth0.com</string>
     <string name="com_auth0_scheme">demo</string>
     <string name="authenticate">Authenticate</string>
     <string name="log_out">Log out</string>
@@ -10,6 +8,8 @@
     <string name="use_the_buttons_and_text_box_below_to_patch_the_country_field_from_user_metadata">Use the buttons and text box below to patch the \'country\' field from \'user_metadata\'</string>
     <string name="get">Get</string>
     <string name="patch">Patch</string>
+    <string name="authDomain">dev-xoy1aufd.us.auth0.com</string>
+    <string name="authClientId">1ZepKwkI3cpx4jgE6PBZR6Y3foosefle</string>
 
 
 </resources>
