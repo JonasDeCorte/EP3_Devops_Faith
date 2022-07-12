@@ -1,4 +1,4 @@
-package com.example.ep3_devops_faith.screens.home
+package com.example.ep3_devops_faith.ui.home
 
 import android.os.Bundle
 import android.view.*

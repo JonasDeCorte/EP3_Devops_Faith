@@ -1,4 +1,4 @@
-package com.example.ep3_devops_faith.screens.utils
+package com.example.ep3_devops_faith.ui.utils
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.ep3_devops_faith.screens.home.HomeFragment">
+    tools:context="com.example.ep3_devops_faith.ui.home.HomeFragment">
     <TextView
         android:id="@+id/testId"
         android:layout_width="match_parent"

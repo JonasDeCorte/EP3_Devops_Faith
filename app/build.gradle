@@ -3,8 +3,9 @@ plugins {
     id 'kotlin-android'
 }
 apply from: '../ktlint.gradle'
-// Adding the apply plugin statement for safeargs
 apply plugin: 'kotlin-kapt'
+// Adding the apply plugin statement for safeargs
+apply plugin: 'androidx.navigation.safeargs'
 android {
     compileSdk 32
 

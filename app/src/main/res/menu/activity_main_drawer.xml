@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_drawer"
+    tools:showIn="navigation_view">
+
+<group android:checkableBehavior="single">
+    <item
+        android:id="@+id/aboutFragment"
+        android:title="@string/about" />
+    <item
+        android:id="@+id/homeFragment"
+        android:title="@string/home" />
+</group>
+</menu>
