@@ -25,9 +25,6 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private var cachedCredentials: Credentials? = null
     private var cachedUserProfile: UserProfile? = null
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,7 +57,8 @@ private fun updateUI() {
                 "Email: ${cachedUserProfile?.email ?: ""}"
 
     if (cachedUserProfile == null) {
-        binding.inputEditMetadata.setText("")
+        binding.inputEditMetadataName.setText("")
+        binding.inputEditMetadataRole.setText("")
     }
 }
 
@@ -106,8 +104,8 @@ private fun showUserProfile() {
     val client = AuthenticationAPIClient(account)
 
     // Use the access token to call userInfo endpoint.
-    // In this sample, we can assume cachedCredentials has been initialized by this point.
-    client.userInfo(cachedCredentials!!.accessToken!!)
+    // We can assume cachedCredentials has been initialized by this point.
+    client.userInfo(cachedCredentials!!.accessToken)
         .start(object : Callback<UserProfile, AuthenticationException> {
             override fun onFailure(exception: AuthenticationException) {
                 showSnackBar("Failure: ${exception.getCode()}")
@@ -121,7 +119,7 @@ private fun showUserProfile() {
 
 private fun getUserMetadata() {
     // Create the user API client
-    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken!!)
+    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
 
     // Get the full user profile
     usersClient.getProfile(cachedUserProfile!!.getId()!!)
@@ -129,21 +127,21 @@ private fun getUserMetadata() {
             override fun onFailure(exception: ManagementException) {
                 showSnackBar("Failure: ${exception.getCode()}")
             }
-
             override fun onSuccess(userProfile: UserProfile) {
                 cachedUserProfile = userProfile
                 updateUI()
-
-                val country = userProfile.getUserMetadata()["country"] as String?
-                binding.inputEditMetadata.setText(country)
+                val Name = userProfile.getUserMetadata()["Name"] as String?
+                binding.inputEditMetadataName.setText(Name)
+                val Role = userProfile.getUserMetadata()["Role"] as String?
+                binding.inputEditMetadataRole.setText(Role)
             }
         })
 }
 
 private fun patchUserMetadata() {
-    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken!!)
-    val metadata = mapOf("country" to binding.inputEditMetadata.text.toString())
-
+    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
+    val metadata = mapOf("Name" to binding.inputEditMetadataName.text.toString().trim(),
+        "Role" to binding.inputEditMetadataRole.text.toString().trim())
     usersClient
         .updateMetadata(cachedUserProfile!!.getId()!!, metadata)
         .start(object : Callback<UserProfile, ManagementException> {

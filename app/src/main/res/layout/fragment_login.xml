@@ -71,13 +71,20 @@
             android:layout_height="50dp"
             android:layout_margin="8dp"
             android:textAlignment="center"
-            android:text="@string/use_the_buttons_and_text_box_below_to_patch_the_country_field_from_user_metadata"
+            android:text="@string/use_the_buttons_and_text_box_below_to_patch_the_Name_field_from_user_metadata"
             android:textSize="12sp" />
+        <EditText
+            android:id="@+id/input_edit_metadata_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name"
+            android:importantForAutofill="no" />
 
         <EditText
-            android:id="@+id/input_edit_metadata"
+            android:id="@+id/input_edit_metadata_role"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="@string/role" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -106,7 +113,7 @@
         android:id="@+id/btnHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Go Home"
+        android:text="@string/go_home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

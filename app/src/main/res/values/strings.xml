@@ -5,7 +5,7 @@
     <string name="log_out">Log out</string>
     <string name="log_in_using_the_browser">Log in using the Browser</string>
     <string name="metadata">Metadata</string>
-    <string name="use_the_buttons_and_text_box_below_to_patch_the_country_field_from_user_metadata">Use the buttons and text box below to patch the \'country\' field from \'user_metadata\'</string>
+    <string name="use_the_buttons_and_text_box_below_to_patch_the_Name_field_from_user_metadata">Use the buttons and text box below to patch the \'Name\' field from \'user_metadata\'</string>
     <string name="get">Get</string>
     <string name="patch">Patch</string>
     <string name="authDomain">dev-xoy1aufd.us.auth0.com</string>
@@ -22,7 +22,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="about">About</string>
     <string name="home">Home</string>
-
+    <string name="go_home">Go Home</string>
+    <string name="role">Role</string>
+    <string name="name">Name</string>
 
 
 </resources>
