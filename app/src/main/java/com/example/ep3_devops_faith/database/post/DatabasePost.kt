@@ -13,9 +13,9 @@ data class DatabasePost(
     var Text: String = "",
     @ColumnInfo(name = "image", typeAffinity = ColumnInfo.BLOB)
     var Picture: Bitmap? = null,
-    var Links: List<String>? = null,
-    @ColumnInfo(name = "person_id")
-    var PersonId: Long = 0L
+    var Link: String = "",
+    @ColumnInfo(name = "user_id")
+    var UserId: Long = 0L
 )
 
 fun List<DatabasePost>.asDomainmodel(): List<Post> {
@@ -24,8 +24,8 @@ fun List<DatabasePost>.asDomainmodel(): List<Post> {
             Id = it.Id,
             Text = it.Text,
             Picture = it.Picture,
-            Links = it.Links,
-            PersonId = it.PersonId
+            Link = it.Link,
+            UserId = it.UserId
         )
     }
 }

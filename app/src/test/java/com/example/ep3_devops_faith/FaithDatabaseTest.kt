@@ -5,6 +5,8 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.ep3_devops_faith.database.FaithDatabase
+import com.example.ep3_devops_faith.database.post.DatabasePost
+import com.example.ep3_devops_faith.database.post.PostDatabaseDao
 import com.example.ep3_devops_faith.database.user.DatabaseUser
 import com.example.ep3_devops_faith.database.user.UserDatabaseDao
 import junit.framework.Assert.assertEquals
@@ -18,6 +20,7 @@ import java.io.IOException
 @RunWith(AndroidJUnit4::class)
 class FaithDatabaseTest {
     private lateinit var userDatabaseDao: UserDatabaseDao
+    private lateinit var postDatabaseDao: PostDatabaseDao
     private lateinit var database: FaithDatabase
 
     @get:Rule
@@ -34,6 +37,7 @@ class FaithDatabaseTest {
             .allowMainThreadQueries()
             .build()
         userDatabaseDao = database.userDatabaseDao
+        postDatabaseDao = database.postDatabaseDao
     }
 
     @After
@@ -63,5 +67,19 @@ class FaithDatabaseTest {
         user.Auth0Key = "editAuth0Key"
         userDatabaseDao.update(user)
         assertEquals(user.Auth0Key, "editAuth0Key")
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun insertAndGetPost() {
+        for (i in 1 until 6 step 1) {
+            val databasePost = DatabasePost()
+            databasePost.Text = "insertAndGetPost$i"
+            databasePost.Link = "insertAndGetPost$i"
+            databasePost.UserId = i.toLong()
+            postDatabaseDao.insert(databasePost)
+            println("$databasePost")
+        }
+        assertEquals(5, postDatabaseDao.getDataCount())
     }
 }

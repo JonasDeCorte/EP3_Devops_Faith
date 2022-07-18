@@ -24,7 +24,22 @@
     <string name="home">Home</string>
     <string name="go_home">Go Home</string>
     <string name="role">Role</string>
+    <string name="avatar">Avatar</string>
+    <string name="update_profile">Update profile</string>
+    <string name="edit_your_name_here">Edit your name here</string>
+    <string name="edit_your_role_here">Edit your role here</string>
+    <string name="profile">profile</string>
+    <string name="add_image">add image</string>
+    <string name="description">description</string>
+    <string name="links">links</string>
+    <string name="image_post">image post</string>
+    <string name="a_new_post">A new post is written here</string>
+    <string name="write_your_post_description_here">Write your post description here</string>
+    <string name="save">Save</string>
     <string name="name">Name</string>
-
+    <string name="add_post">Add post</string>
+    <string name="post_overview">Overview</string>
+    <string name="image_provided_by_the_user">Image provided by the user</string>
+    <string name="add_your_link_here">Add your link here</string>
 
 </resources>

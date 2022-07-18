@@ -2,11 +2,13 @@ package com.example.ep3_devops_faith.ui.home
 
 import android.os.Bundle
 import android.view.*
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.databinding.FragmentHomeBinding
+
 /**
  * A simple [Fragment] subclass.
  * Use the [HomeFragment.newInstance] factory method to
@@ -20,7 +22,10 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentHomeBinding.inflate(layoutInflater)
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false)
+        // binding.btnProfile.setOnClickListener(
+        // Navigation.createNavigateOnClickListener(R.id.action_homeFragment_to_userProfileFragment)
+        // )
         setHasOptionsMenu(true)
         return binding.root
     }

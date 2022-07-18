@@ -13,8 +13,8 @@ data class Post(
     var Id: Long = 0L,
     var Text: String = "",
     var Picture: Bitmap? = null,
-    var Links: List<String>? = null,
-    var PersonId: Long = 0L
+    var Link: String = "",
+    var UserId: Long = 0L
 )
 data class Comment(
     var Id: Long = 0L,

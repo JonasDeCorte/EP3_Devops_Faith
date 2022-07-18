@@ -19,13 +19,25 @@ data class DatabaseUser(
 )
 
 fun List<DatabaseUser>.asDomainmodel(): List<User> {
-        return map {
-                User(
-                    Id = it.Id,
-                    Name = it.Name,
-                    Auth0_key = it.Auth0Key,
-                    ProfileImageUrl = it.ProfileImageUrl,
-                    Role = it.Role
-                )
-        }
+    return map {
+        User(
+            Id = it.Id,
+            Name = it.Name,
+            Auth0_key = it.Auth0Key,
+            ProfileImageUrl = it.ProfileImageUrl,
+            Role = it.Role
+        )
+    }
+}
+
+fun DatabaseUser.asDomainmodel(): User {
+    this.apply {
+        return User(
+            Id = this.Id,
+            Name = this.Name,
+            Auth0_key = this.Auth0Key,
+            ProfileImageUrl = this.ProfileImageUrl,
+            Role = this.Role
+        )
+    }
 }

@@ -37,6 +37,11 @@ class LoginFragment : Fragment() {
         )
         // Bind the button click with the login action
         binding = FragmentLoginBinding.inflate(layoutInflater)
+        SetClickListeners()
+        return binding.root
+    }
+
+    private fun SetClickListeners() {
         binding.buttonLogin.setOnClickListener { loginWithBrowser() }
         binding.buttonLogout.setOnClickListener { logout() }
         binding.buttonGetMetadata.setOnClickListener { getUserMetadata() }
@@ -44,24 +49,23 @@ class LoginFragment : Fragment() {
         binding.btnHome.setOnClickListener(
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeFragment)
         )
-        return binding.root
     }
-private fun updateUI() {
-    binding.buttonLogout.isEnabled = cachedCredentials != null
-    binding.metadataPanel.isVisible = cachedCredentials != null
-    binding.buttonLogin.isEnabled = cachedCredentials == null
-    binding.userProfile.isVisible = cachedCredentials != null
 
-    binding.userProfile.text =
-        "Name: ${cachedUserProfile?.name ?: ""}\n" +
-                "Email: ${cachedUserProfile?.email ?: ""}"
+    private fun updateUI() {
+        binding.buttonLogout.isEnabled = cachedCredentials != null
+        binding.metadataPanel.isVisible = cachedCredentials != null
+        binding.buttonLogin.isEnabled = cachedCredentials == null
+        binding.userProfile.isVisible = cachedCredentials != null
 
-    if (cachedUserProfile == null) {
-        binding.inputEditMetadataName.setText("")
-        binding.inputEditMetadataRole.setText("")
+        binding.userProfile.text =
+            "Name: ${cachedUserProfile?.name ?: ""}\n" +
+                    "Email: ${cachedUserProfile?.email ?: ""}"
+
+        if (cachedUserProfile == null) {
+            binding.inputEditMetadataName.setText("")
+            binding.inputEditMetadataRole.setText("")
+        }
     }
-}
-
 private fun loginWithBrowser() {
     // Setup the WebAuthProvider, using the custom scheme and scope.
     WebAuthProvider.login(account)
@@ -82,7 +86,6 @@ private fun loginWithBrowser() {
             }
         })
 }
-
 private fun logout() {
     WebAuthProvider.logout(account)
         .withScheme(getString(R.string.com_auth0_scheme))
@@ -93,6 +96,7 @@ private fun logout() {
                 cachedUserProfile = null
                 updateUI()
             }
+
             override fun onFailure(exception: AuthenticationException) {
                 updateUI()
                 showSnackBar("Failure: ${exception.getCode()}")
@@ -100,68 +104,82 @@ private fun logout() {
         })
 }
 
-private fun showUserProfile() {
-    val client = AuthenticationAPIClient(account)
+    private fun showUserProfile() {
+        if (cachedCredentials == null) {
+            return
+        }
+        // The line below creates an instance of AuthenticationAPIClient,
+        // an object for contacting the Auth0 API for account information.
+        // This object will be used to request the user’s profile information.
+        val client = AuthenticationAPIClient(account)
+        // Use the access token to call userInfo endpoint.
+        // We can assume cachedCredentials has been initialized by this point.
+        client.userInfo(cachedCredentials!!.accessToken)
+            .start(object : Callback<UserProfile, AuthenticationException> {
+                override fun onFailure(exception: AuthenticationException) {
+                    showSnackBar("Failure: ${exception.getCode()}")
+                }
 
-    // Use the access token to call userInfo endpoint.
-    // We can assume cachedCredentials has been initialized by this point.
-    client.userInfo(cachedCredentials!!.accessToken)
-        .start(object : Callback<UserProfile, AuthenticationException> {
-            override fun onFailure(exception: AuthenticationException) {
-                showSnackBar("Failure: ${exception.getCode()}")
-            }
-            override fun onSuccess(profile: UserProfile) {
-                cachedUserProfile = profile
-                updateUI()
-            }
-        })
-}
+                override fun onSuccess(profile: UserProfile) {
+                    cachedUserProfile = profile
+                    updateUI()
+                }
+            })
+    }
 
-private fun getUserMetadata() {
-    // Create the user API client
-    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
+    private fun getUserMetadata() {
+        if (cachedCredentials == null || cachedUserProfile == null) {
+            return
+        }
+        // Create the user API client
+        val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
+        // Get the full user profile
+        usersClient.getProfile(cachedUserProfile!!.getId()!!)
+            .start(object : Callback<UserProfile, ManagementException> {
+                override fun onFailure(exception: ManagementException) {
+                    showSnackBar("Failure: ${exception.getCode()}")
+                }
 
-    // Get the full user profile
-    usersClient.getProfile(cachedUserProfile!!.getId()!!)
-        .start(object : Callback<UserProfile, ManagementException> {
-            override fun onFailure(exception: ManagementException) {
-                showSnackBar("Failure: ${exception.getCode()}")
-            }
-            override fun onSuccess(userProfile: UserProfile) {
-                cachedUserProfile = userProfile
-                updateUI()
-                val Name = userProfile.getUserMetadata()["Name"] as String?
-                binding.inputEditMetadataName.setText(Name)
-                val Role = userProfile.getUserMetadata()["Role"] as String?
-                binding.inputEditMetadataRole.setText(Role)
-            }
-        })
-}
+                override fun onSuccess(userProfile: UserProfile) {
+                    cachedUserProfile = userProfile
+                    updateUI()
+                    val Name = userProfile.getUserMetadata()["Name"] as String?
+                    binding.inputEditMetadataName.setText(Name)
+                    val Role = userProfile.getUserMetadata()["Role"] as String?
+                    binding.inputEditMetadataRole.setText(Role)
+                }
+            })
+    }
 
-private fun patchUserMetadata() {
-    val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
-    val metadata = mapOf("Name" to binding.inputEditMetadataName.text.toString().trim(),
-        "Role" to binding.inputEditMetadataRole.text.toString().trim())
-    usersClient
-        .updateMetadata(cachedUserProfile!!.getId()!!, metadata)
-        .start(object : Callback<UserProfile, ManagementException> {
-            override fun onFailure(exception: ManagementException) {
-                showSnackBar("Failure: ${exception.getCode()}")
-            }
+    private fun patchUserMetadata() {
+        if (cachedCredentials == null) {
+            return
+        }
+        val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
+        val metadata = mapOf(
+            "Name" to binding.inputEditMetadataName.text.toString().trim(),
+            "Role" to binding.inputEditMetadataRole.text.toString().trim()
+        )
+        usersClient
+            .updateMetadata(cachedUserProfile!!.getId()!!, metadata)
+            .start(object : Callback<UserProfile, ManagementException> {
+                override fun onFailure(exception: ManagementException) {
+                    showSnackBar("Failure: ${exception.getCode()}")
+                }
 
-            override fun onSuccess(profile: UserProfile) {
-                cachedUserProfile = profile
-                updateUI()
-                showSnackBar("Successful")
-            }
-        })
-}
+                override fun onSuccess(profile: UserProfile) {
+                    cachedUserProfile = profile
+                    updateUI()
+                    showSnackBar("Successful")
+                }
+            })
+    }
 
-private fun showSnackBar(text: String) {
-    Snackbar.make(
-        binding.root,
-        text,
-        Snackbar.LENGTH_LONG
-    ).show()
-}
+    private fun showSnackBar(text: String) {
+        Snackbar.make(
+            binding.root,
+            text,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
 }
