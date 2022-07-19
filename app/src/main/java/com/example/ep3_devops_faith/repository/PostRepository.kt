@@ -21,7 +21,7 @@ class PostRepository(private val faithDatabase: FaithDatabase) {
             Text = post.Text,
             Picture = post.Picture,
             Link = post.Link,
-            UserId = 1
+            UserId = ""
             // UserId = post.UserId
         )
         faithDatabase.postDatabaseDao.insert(newDatabasePost)

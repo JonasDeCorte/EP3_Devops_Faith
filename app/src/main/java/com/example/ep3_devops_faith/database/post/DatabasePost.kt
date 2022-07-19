@@ -15,7 +15,7 @@ data class DatabasePost(
     var Picture: Bitmap? = null,
     var Link: String = "",
     @ColumnInfo(name = "user_id")
-    var UserId: Long = 0L
+    var UserId: String = ""
 )
 
 fun List<DatabasePost>.asDomainmodel(): List<Post> {

@@ -57,6 +57,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.camera:camera-view:1.0.0-alpha23'
+    implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
     testImplementation "org.robolectric:robolectric:4.5.1"
     testImplementation "androidx.arch.core:core-testing:2.1.0"
     // AndroidJUnitRunner and JUnit Rules

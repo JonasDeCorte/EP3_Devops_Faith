@@ -17,6 +17,7 @@ import androidx.navigation.findNavController
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentAddPostBinding
+import com.example.ep3_devops_faith.login.CredentialsManager
 import timber.log.Timber
 
 private const val pickImage = 100
@@ -34,6 +35,7 @@ class AddPostFragment : Fragment() {
             DataBindingUtil.inflate(
                 inflater, R.layout.fragment_add_post, container, false
             )
+
         // get an instance of the appContext to setup the database
         val appContext = requireNotNull(this.activity).application
         val dataSource = FaithDatabase.getInstance(appContext).postDatabaseDao
@@ -61,7 +63,8 @@ class AddPostFragment : Fragment() {
                 viewModel.savePost(
                     binding.editTextTextPost.text.toString(),
                     bitmap,
-                    binding.LinkTextPost.text.toString()
+                    binding.LinkTextPost.text.toString(),
+                    CredentialsManager.cachedUserProfile?.getId()!!
                 )
                 viewModel.saveEventDone()
                 Timber.i("POST HAS BEEN SAVED")
