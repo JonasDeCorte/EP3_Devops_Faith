@@ -11,7 +11,7 @@ data class DatabaseComment(
     var Id: Long = 0L,
     val Message: String = "",
     @ColumnInfo(name = "user_id")
-    val UserId: Long = 0L,
+    val UserId: String = "",
     @ColumnInfo(name = "post_id")
     val PostId: Long = 0L
 )

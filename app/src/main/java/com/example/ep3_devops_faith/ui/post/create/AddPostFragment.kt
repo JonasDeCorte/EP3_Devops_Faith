@@ -59,13 +59,7 @@ class AddPostFragment : Fragment() {
                         bitmap = (binding.imgPost.drawable as BitmapDrawable).bitmap
                     }
                 }
-                // TODO add link
-                viewModel.savePost(
-                    binding.editTextTextPost.text.toString(),
-                    bitmap,
-                    binding.LinkTextPost.text.toString(),
-                    CredentialsManager.cachedUserProfile?.getId()!!
-                )
+                SavePost(bitmap)
                 viewModel.saveEventDone()
                 Timber.i("POST HAS BEEN SAVED")
                 view?.findNavController()
@@ -73,6 +67,15 @@ class AddPostFragment : Fragment() {
             }
         })
         return binding.root
+    }
+
+    private fun SavePost(bitmap: Bitmap?) {
+        viewModel.savePost(
+            binding.editTextTextPost.text.toString(),
+            bitmap,
+            binding.LinkTextPost.text.toString(),
+            CredentialsManager.cachedUserProfile?.getId()!!
+        )
     }
 
     private fun setClickListeners() {

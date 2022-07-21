@@ -41,5 +41,8 @@
     <string name="post_overview">Overview</string>
     <string name="image_provided_by_the_user">Image provided by the user</string>
     <string name="add_your_link_here">Add your link here</string>
+    <string name="testLink">www.youtube.com</string>
+    <string name="actual_comment">Actual Comment</string>
+    <string name="enter_comment">Enter Comment...</string>
 
 </resources>

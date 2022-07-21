@@ -6,6 +6,8 @@ import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.database.post.DatabasePost
 import com.example.ep3_devops_faith.database.post.asDomainmodel
 import com.example.ep3_devops_faith.domain.Post
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class PostRepository(private val faithDatabase: FaithDatabase) {
@@ -14,30 +16,32 @@ class PostRepository(private val faithDatabase: FaithDatabase) {
         Transformations.map(faithDatabase.postDatabaseDao.getAllEntries()) {
             it.asDomainmodel()
         }
-
+    // Database call
     suspend fun insert(post: Post) {
-        Timber.i("insert post called")
-        val newDatabasePost = DatabasePost(
-            Text = post.Text,
-            Picture = post.Picture,
-            Link = post.Link,
-            UserId = ""
-            // UserId = post.UserId
-        )
-        faithDatabase.postDatabaseDao.insert(newDatabasePost)
-        Timber.i("insert post success")
+        // switch context to IO thread
+        withContext(Dispatchers.IO) {
+            Timber.i("insert post called")
+            val newDatabasePost = DatabasePost(
+                Text = post.Text,
+                Picture = post.Picture,
+                Link = post.Link,
+                UserId = post.UserId
+            )
+            faithDatabase.postDatabaseDao.insert(newDatabasePost)
+            Timber.i("insert post success")
+        }
     }
 
     suspend fun count(): Int {
-        return faithDatabase.postDatabaseDao.getDataCount()
+        return withContext(Dispatchers.IO) {
+            faithDatabase.postDatabaseDao.getDataCount()
+        }
     }
 
     suspend fun delete(post: Post) {
-        val databasePost = faithDatabase.postDatabaseDao.get(post.Id)
-        faithDatabase.postDatabaseDao.delete(databasePost)
+        return withContext(Dispatchers.IO) {
+            val databasePost = faithDatabase.postDatabaseDao.get(post.Id)
+            faithDatabase.postDatabaseDao.delete(databasePost)
+        }
     }
-
-    // suspend fun update(post: Post) {
-//        faithDatabase.postDatabaseDao.update()
-    //  }
 }

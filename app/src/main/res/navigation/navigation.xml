@@ -41,9 +41,22 @@
     <fragment
         android:id="@+id/postOverviewFragment"
         android:name="com.example.ep3_devops_faith.ui.post.read.PostOverviewFragment"
-        android:label="PostOverviewFragment" />
+        android:label="PostOverviewFragment" >
+        <action
+            android:id="@+id/action_postOverviewFragment_to_postDetailFragment"
+            app:destination="@id/postDetailFragment" />
+    </fragment>
     <fragment
         android:id="@+id/userProfileFragment"
         android:name="com.example.ep3_devops_faith.ui.user.profile.UserProfileFragment"
         android:label="UserProfileFragment" />
+    <fragment
+        android:id="@+id/postDetailFragment"
+        android:name="com.example.ep3_devops_faith.ui.post.detail.PostDetailFragment"
+        android:label="PostDetailFragment">
+        <argument
+            android:name="selectedProperty"
+            app:argType="com.example.ep3_devops_faith.domain.Post" />
+    </fragment>
+
 </navigation>

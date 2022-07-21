@@ -7,8 +7,7 @@ import com.example.ep3_devops_faith.database.post.PostDatabaseDao
 
 class PostOverviewViewModelFactory(
     private val dataSource: PostDatabaseDao,
-    private val application: Application,
-    private val adapter: PostAdapter
+    private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(PostOverviewViewModel::class.java)) {

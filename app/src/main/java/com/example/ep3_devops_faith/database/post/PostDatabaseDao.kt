@@ -8,9 +8,6 @@ interface PostDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(databasePost: DatabasePost)
 
-    @Update
-    fun update(databasePost: DatabasePost)
-
     @Delete
     fun delete(databasePost: DatabasePost)
 
