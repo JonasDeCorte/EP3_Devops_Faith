@@ -83,3 +83,8 @@ data class Comment(
         }
     }
 }
+data class Favorite(
+    var Id: Long = 0L,
+    var UserId: String = "",
+    var PostId: Long = 0L
+)

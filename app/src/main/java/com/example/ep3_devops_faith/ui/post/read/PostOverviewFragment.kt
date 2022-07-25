@@ -6,20 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentPostOverviewBinding
+import com.google.android.material.snackbar.Snackbar
+import timber.log.Timber
 
 class PostOverviewFragment : Fragment() {
     lateinit var binding: FragmentPostOverviewBinding
-    lateinit var postViewModel: PostOverviewViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var postViewModel: PostOverviewViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,7 +32,7 @@ class PostOverviewFragment : Fragment() {
         // create the factory + viewmodel
         val viewModelFactory = PostOverviewViewModelFactory(dataSource, application)
         postViewModel =
-            ViewModelProvider(this, viewModelFactory).get(PostOverviewViewModel::class.java)
+            ViewModelProvider(this, viewModelFactory)[PostOverviewViewModel::class.java]
         // Giving the binding access to the PostOverviewViewModel
         binding.postViewModel = postViewModel
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
@@ -44,12 +41,14 @@ class PostOverviewFragment : Fragment() {
         // tells the viewModel when our property is clicked
         binding.postList.adapter = PostAdapter(PostListener {
             postViewModel.displayPropertyDetails(it)
+        }, FavoriteListener {
+            postViewModel.FavoriteClick(it)
         })
 
         // Observe the navigateToSelectedProperty LiveData and Navigate when it isn't null
         // After navigating, call displayPropertyDetailsComplete() so that the ViewModel is ready
         // for another navigation event.
-        postViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, Observer {
+        postViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
             if (null != it) {
                 // Must find the NavController from the Fragment
                 this.findNavController().navigate(
@@ -59,6 +58,30 @@ class PostOverviewFragment : Fragment() {
                 postViewModel.displayPropertyDetailsComplete()
             }
         })
+        postViewModel.event.observe(viewLifecycleOwner, { post ->
+            if (null != post) {
+                postViewModel.isFavorite(post).observe(viewLifecycleOwner, { isFav ->
+                    if (isFav) {
+                        postViewModel.removeFavorite(post)
+                        showSnackBar("REMOVED POST FROM FAVORITES")
+                        Timber.i("REMOVED POST FROM FAVORITES")
+                        postViewModel.EventDone()
+                    } else {
+                        postViewModel.saveFavorite(post)
+                        postViewModel.EventDone()
+                        Timber.i(" SAVED POST TO FAVORITES")
+                        showSnackBar("SAVED POST TO FAVORITES")
+                    }
+                })
+            }
+        })
         return binding.root
+    }
+    private fun showSnackBar(text: String) {
+        Snackbar.make(
+            binding.root,
+            text,
+            Snackbar.LENGTH_LONG
+        ).show()
     }
 }

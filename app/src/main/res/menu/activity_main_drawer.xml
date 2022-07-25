@@ -6,8 +6,9 @@
 
 <group android:checkableBehavior="single">
     <item
-        android:id="@+id/aboutFragment"
-        android:title="@string/about" />
+        android:id="@+id/favoritePostsOverViewFragment"
+        android:title="favorite"
+        />
     <item
         android:id="@+id/homeFragment"
         android:title="@string/home" />

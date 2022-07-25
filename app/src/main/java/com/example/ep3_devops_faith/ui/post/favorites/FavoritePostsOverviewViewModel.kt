@@ -1,13 +1,11 @@
-package com.example.ep3_devops_faith.ui.post.read
+package com.example.ep3_devops_faith.ui.post.favorites
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.database.post.PostDatabaseDao
 import com.example.ep3_devops_faith.domain.Post
+import com.example.ep3_devops_faith.login.CredentialsManager
 import com.example.ep3_devops_faith.repository.FavoriteRepository
 import com.example.ep3_devops_faith.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,12 +13,46 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
+class FavoritePostsOverviewViewModel(val database: PostDatabaseDao, app: Application) :
     AndroidViewModel(app) {
     private val db = FaithDatabase.getInstance(app.applicationContext)
     private val repository = PostRepository(db)
     private val favoriteRepository = FavoriteRepository(db)
-    val posts = repository.allPosts
+
+    private var _items: MutableLiveData<List<Post>> = MutableLiveData(listOf())
+    val items: LiveData<List<Post>> = _items
+
+    init {
+        initFavs()
+    }
+    // TODO somehow move this to repo level.
+    private fun initFavs() {
+        viewModelScope.launch {
+            val favos =
+                getUserFavorites(CredentialsManager.cachedUserProfile?.getId()!!) // returns a list of postId's
+            Timber.i("Favos = " + favos.value?.size.toString())
+            favos.asFlow().collect {
+                it.forEach { postId ->
+                    val dbPost = repository.get(postId) // returns DatabasePost
+                    // make it a domain model Post
+                    val post = Post(
+                        Text = dbPost.Text,
+                        UserId = dbPost.UserId,
+                        UserEmail = dbPost.UserEmail,
+                        Link = dbPost.Link,
+                        Picture = dbPost.Picture,
+                        Id = dbPost.Id
+                    )
+                    // add to LiveData list.
+                    _items.value = _items.value?.plus(post) ?: listOf(post)
+                }
+            }
+        }
+    }
+
+    fun getUserFavorites(userName: String): LiveData<List<Long>> {
+        return favoriteRepository.getUserFavorites(userName)
+    }
 
     // Internally, we use a MutableLiveData to handle navigation to the selected property
     private val _navigateToSelectedProperty = MutableLiveData<Post?>()
@@ -59,11 +91,14 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
     fun saveFavorite(post: Post) {
         viewModelScope.launch {
             saveFavoriteWithRepository(post)
+            initFavs()
         }
     }
+
     fun removeFavorite(post: Post) {
         viewModelScope.launch {
             removeFavoriteWithRepository(post)
+            initFavs()
         }
     }
 
@@ -91,6 +126,7 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
             favoriteRepository.insert(post)
         }
     }
+
     private suspend fun removeFavoriteWithRepository(post: Post) {
         withContext(Dispatchers.IO) {
             favoriteRepository.delete(post)

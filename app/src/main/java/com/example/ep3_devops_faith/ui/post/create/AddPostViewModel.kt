@@ -46,7 +46,7 @@ class AddPostViewModel(val database: PostDatabaseDao, application: Application) 
         }
     }
 
-    suspend fun savePostWithRepository(newPost: Post) {
+    private suspend fun savePostWithRepository(newPost: Post) {
         withContext(Dispatchers.IO) {
             repository.insert(newPost)
         }

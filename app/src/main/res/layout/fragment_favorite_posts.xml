@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="postViewModel"
-            type="com.example.ep3_devops_faith.ui.post.read.PostOverviewViewModel" />
+            name="favoritePostsOverviewViewModel"
+            type="com.example.ep3_devops_faith.ui.post.favorites.FavoritePostsOverviewViewModel" />
 
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +24,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:listData="@{postViewModel.posts}"
+            app:listData="@{favoritePostsOverviewViewModel.items}"
             tools:listitem="@layout/post_list_item"
             tools:itemCount="16"/>
 

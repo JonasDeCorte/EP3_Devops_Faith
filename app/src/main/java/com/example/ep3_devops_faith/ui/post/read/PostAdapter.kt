@@ -8,14 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ep3_devops_faith.databinding.PostListItemBinding
 import com.example.ep3_devops_faith.domain.Post
 
-class PostAdapter(val clickListener: PostListener) :
+class PostAdapter(val clickListener: PostListener, val favoriteListener: FavoriteListener) :
     ListAdapter<Post, ViewHolder>(PostDiffCallback()) {
     /**
      * Replaces the contents of a view (invoked by the layout manager)
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(clickListener, item)
+        holder.bind(clickListener, favoriteListener, item)
     }
     /**
      * Create new [RecyclerView] item views (invoked by the layout manager)
@@ -26,9 +26,10 @@ class PostAdapter(val clickListener: PostListener) :
 }
 
 class ViewHolder(val binding: PostListItemBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(clickListener: PostListener, item: Post) {
+    fun bind(clickListener: PostListener, favoriteListener: FavoriteListener, item: Post) {
         binding.post = item
         binding.clickListener = clickListener
+        binding.favoriteListener = favoriteListener
         binding.executePendingBindings()
     }
 
@@ -60,5 +61,8 @@ class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
  * @param clickListener lambda that will be called with the current [Post]
  */
 class PostListener(val clickListener: (post: Post) -> Unit) {
+    fun onClick(post: Post) = clickListener(post)
+}
+class FavoriteListener(val clickListener: (post: Post) -> Unit) {
     fun onClick(post: Post) = clickListener(post)
 }

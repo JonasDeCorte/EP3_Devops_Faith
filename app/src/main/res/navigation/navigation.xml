@@ -82,5 +82,9 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@animator/nav_default_pop_enter_anim" />
     </fragment>
+    <fragment
+        android:id="@+id/favoritePostsOverViewFragment"
+        android:name="com.example.ep3_devops_faith.ui.post.favorites.FavoritePostsOverViewFragment"
+        android:label="FavoritePostsOverViewFragment" />
 
 </navigation>

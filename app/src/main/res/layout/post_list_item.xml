@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="post"
             type="com.example.ep3_devops_faith.domain.Post" />
@@ -13,73 +12,87 @@
         <variable
             name="clickListener"
             type="com.example.ep3_devops_faith.ui.post.read.PostListener" />
+        <variable
+            name="favoriteListener"
+            type="com.example.ep3_devops_faith.ui.post.read.FavoriteListener" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="@{()->clickListener.onClick(post)}">
+        android:layout_height="match_parent"
+        android:onClick="@{()->clickListener.onClick(post)}"
+        android:orientation="horizontal"
+
+        android:weightSum="10">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/post_text_textview"
             app:postImage="@{post}"
+            tools:ignore="ImageContrastCheck"
             tools:srcCompat="@drawable/ic_launcher_background" />
 
         <TextView
             android:id="@+id/txtUserName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+
+            android:layout_marginTop="8dp"
+            android:text="@string/name"
+            app:layout_constraintEnd_toStartOf="@+id/fav"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:postUser="@{post}" />
+
+        <TextView
+            android:id="@+id/linkText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/post_text_textview"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:postUser="@{post}"/>
-
-        <TextView
-            android:id="@+id/linkText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
             android:autoLink="web"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            android:contentDescription="@string/add_your_link_here"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/post_text_textview"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
             app:postLinkText="@{post}" />
 
         <TextView
             android:id="@+id/post_text_textview"
-            android:layout_width="263dp"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtUserName"
+            app:postText="@{post}" />
+
+        <ImageView
+            android:id="@+id/fav"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="TextView"
-            app:layout_constraintBottom_toTopOf="@+id/imageView"
+            android:onClick="@{()->favoriteListener.onClick(post)}"
+            android:src="@drawable/ic_baseline_favorite_24"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:postText="@{post}" />
-
+            app:layout_constraintStart_toEndOf="@+id/txtUserName"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -7,18 +7,20 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.ep3_devops_faith.database.comment.CommentDatabaseDao
 import com.example.ep3_devops_faith.database.comment.DatabaseComment
+import com.example.ep3_devops_faith.database.favorite.DatabaseFavorite
+import com.example.ep3_devops_faith.database.favorite.FavoriteDatabaseDao
 import com.example.ep3_devops_faith.database.post.DatabasePost
 import com.example.ep3_devops_faith.database.post.PostDatabaseDao
 import com.example.ep3_devops_faith.utils.ImageConverter
 
 @TypeConverters(ImageConverter::class)
-@Database(entities = [DatabasePost::class, DatabaseComment::class],
-    version = 8,
+@Database(entities = [DatabasePost::class, DatabaseComment::class, DatabaseFavorite::class],
+    version = 9,
     exportSchema = false)
 abstract class FaithDatabase : RoomDatabase() {
     abstract val postDatabaseDao: PostDatabaseDao
     abstract val commentDatabaseDao: CommentDatabaseDao
-
+    abstract val favoriteDatabaseDao: FavoriteDatabaseDao
     companion object {
         @Volatile // value always up to data & the same for all execution threads
         private var INSTANCE: FaithDatabase? = null

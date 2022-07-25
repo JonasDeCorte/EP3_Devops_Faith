@@ -39,6 +39,12 @@ class PostRepository(private val faithDatabase: FaithDatabase) {
         }
     }
 
+    suspend fun get(id: Long): DatabasePost {
+        return withContext(Dispatchers.IO) {
+            faithDatabase.postDatabaseDao.get(id)
+        }
+    }
+
     suspend fun delete(post: Post) {
         return withContext(Dispatchers.IO) {
             val databasePost = faithDatabase.postDatabaseDao.get(post.Id)
