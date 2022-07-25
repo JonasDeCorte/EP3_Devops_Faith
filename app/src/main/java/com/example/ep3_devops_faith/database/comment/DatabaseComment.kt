@@ -9,11 +9,13 @@ import com.example.ep3_devops_faith.domain.Comment
 data class DatabaseComment(
     @PrimaryKey(autoGenerate = true)
     var Id: Long = 0L,
-    val Message: String = "",
+    var Message: String = "",
     @ColumnInfo(name = "user_id")
     val UserId: String = "",
     @ColumnInfo(name = "post_id")
-    val PostId: Long = 0L
+    val PostId: Long = 0L,
+    @ColumnInfo(name = "user_email")
+    val UserEmail: String = ""
 )
 fun List<DatabaseComment>.asDomainmodel(): List<Comment> {
     return map {
@@ -21,7 +23,8 @@ fun List<DatabaseComment>.asDomainmodel(): List<Comment> {
             Id = it.Id,
             Message = it.Message,
             UserId = it.UserId,
-            PostId = it.PostId
+            PostId = it.PostId,
+            UserEmail = it.UserEmail
         )
     }
 }

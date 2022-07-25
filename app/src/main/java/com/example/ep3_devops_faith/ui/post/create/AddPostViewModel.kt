@@ -34,13 +34,14 @@ class AddPostViewModel(val database: PostDatabaseDao, application: Application) 
         _saveEvent.value = false
     }
 
-    fun savePost(text: String, avatar: Bitmap?, link: String?, userId: String) {
+    fun savePost(text: String, avatar: Bitmap?, link: String?, userId: String, userEmail: String) {
         viewModelScope.launch {
             val post = Post()
             post.Text = text
             post.Picture = avatar
             post.Link = link!!
             post.UserId = userId
+            post.UserEmail = userEmail
             savePostWithRepository(post)
         }
     }

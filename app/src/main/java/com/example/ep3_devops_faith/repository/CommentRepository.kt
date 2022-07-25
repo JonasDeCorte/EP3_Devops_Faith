@@ -6,7 +6,6 @@ import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.database.comment.DatabaseComment
 import com.example.ep3_devops_faith.database.comment.asDomainmodel
 import com.example.ep3_devops_faith.domain.Comment
-import com.example.ep3_devops_faith.domain.Post
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -26,6 +25,7 @@ class CommentRepository(private val faithDatabase: FaithDatabase) {
             val newDatabaseComment = DatabaseComment(
                 Message = comment.Message,
                 UserId = comment.UserId,
+                UserEmail = comment.UserEmail,
                 PostId = comment.PostId
             )
             faithDatabase.commentDatabaseDao.insert(newDatabaseComment)
@@ -39,10 +39,20 @@ class CommentRepository(private val faithDatabase: FaithDatabase) {
         }
     }
 
-    suspend fun delete(post: Post) {
+    suspend fun update(comment: Comment) {
         withContext(Dispatchers.IO) {
-            val databasePost = faithDatabase.commentDatabaseDao.get(post.Id)
-            faithDatabase.commentDatabaseDao.delete(databasePost)
+            var databaseComment = faithDatabase.commentDatabaseDao.get(comment.Id)
+            databaseComment.Message = comment.Message
+            faithDatabase.commentDatabaseDao.update(databaseComment)
+            Timber.i("update comment success")
+        }
+    }
+
+    suspend fun delete(comment: Comment) {
+        withContext(Dispatchers.IO) {
+            val databaseComment = faithDatabase.commentDatabaseDao.get(comment.Id)
+            faithDatabase.commentDatabaseDao.delete(databaseComment)
+            Timber.i("delete comment success")
         }
     }
 }

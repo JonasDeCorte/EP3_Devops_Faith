@@ -1,6 +1,7 @@
 package com.example.ep3_devops_faith.ui.post.create
 
 import android.app.Activity.RESULT_OK
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -10,6 +11,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -64,6 +66,7 @@ class AddPostFragment : Fragment() {
                 Timber.i("POST HAS BEEN SAVED")
                 view?.findNavController()
                     ?.navigate(AddPostFragmentDirections.actionAddPostFragmentToPostOverviewFragment())
+                requireView().hideSoftInput()
             }
         })
         return binding.root
@@ -74,7 +77,8 @@ class AddPostFragment : Fragment() {
             binding.editTextTextPost.text.toString(),
             bitmap,
             binding.LinkTextPost.text.toString(),
-            CredentialsManager.cachedUserProfile?.getId()!!
+            CredentialsManager.cachedUserProfile?.getId()!!,
+            CredentialsManager.cachedUserProfile?.email.toString()
         )
     }
 
@@ -97,5 +101,11 @@ class AddPostFragment : Fragment() {
             binding.imgPost.setImageURI(imageUri)
             Timber.d(data.toString())
         }
+    }
+
+    fun View.hideSoftInput() {
+        val inputMethodManager =
+            context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
     }
 }

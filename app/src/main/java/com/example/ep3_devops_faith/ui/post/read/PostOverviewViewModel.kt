@@ -10,8 +10,8 @@ import com.example.ep3_devops_faith.repository.PostRepository
 
 class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
     AndroidViewModel(app) {
-    val db = FaithDatabase.getInstance(app.applicationContext)
-    val repository = PostRepository(db)
+    private val db = FaithDatabase.getInstance(app.applicationContext)
+    private val repository = PostRepository(db)
     val posts = repository.allPosts
 
     // Internally, we use a MutableLiveData to handle navigation to the selected property
@@ -23,7 +23,7 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
 
     /**
      * When the property is clicked, set the [_navigateToSelectedProperty] [MutableLiveData]
-     * @param marsProperty The [MarsProperty] that was clicked on.
+     * @param post The [Post] that was clicked on.
      */
     fun displayPropertyDetails(post: Post) {
         _navigateToSelectedProperty.value = post

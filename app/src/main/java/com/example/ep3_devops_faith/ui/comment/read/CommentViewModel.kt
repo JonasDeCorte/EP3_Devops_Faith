@@ -19,8 +19,8 @@ class CommentViewModel(post: Post, val database: CommentDatabaseDao, app: Applic
     private val _saveEvent = MutableLiveData<Boolean>()
     val saveEvent: LiveData<Boolean>
         get() = _saveEvent
-    val db = FaithDatabase.getInstance(app.applicationContext)
-    val repository = CommentRepository(db)
+    private val db = FaithDatabase.getInstance(app.applicationContext)
+    private val repository = CommentRepository(db)
     var comments: LiveData<List<Comment>>? = null
 
     init {
@@ -38,19 +38,42 @@ class CommentViewModel(post: Post, val database: CommentDatabaseDao, app: Applic
         _saveEvent.value = false
     }
 
-    fun saveComment(message: String, postId: Long, userId: String) {
+    fun saveComment(message: String, postId: Long, userId: String, userEmail: String) {
         viewModelScope.launch {
             val comment = Comment()
             comment.Message = message
             comment.PostId = postId
             comment.UserId = userId
+            comment.UserEmail = userEmail
             saveCommentWithRepository(comment)
         }
     }
 
-    suspend fun saveCommentWithRepository(newComment: Comment) {
+    private suspend fun saveCommentWithRepository(newComment: Comment) {
         withContext(Dispatchers.IO) {
             repository.insert(newComment)
         }
+    }
+
+    // Internally, we use a MutableLiveData to handle navigation to the selected property
+    private val _navigateToSelectedProperty = MutableLiveData<Comment?>()
+
+    // The external immutable LiveData for the navigation property
+    val navigateToSelectedProperty: MutableLiveData<Comment?>
+        get() = _navigateToSelectedProperty
+
+    /**
+     * When the property is clicked, set the [_navigateToSelectedProperty] [MutableLiveData]
+     * @param comment The [Comment] that was clicked on.
+     */
+    fun displayPropertyDetails(comment: Comment) {
+        _navigateToSelectedProperty.value = comment
+    }
+
+    /**
+     * After the navigation has taken place, make sure navigateToSelectedProperty is set to null
+     */
+    fun displayPropertyDetailsComplete() {
+        _navigateToSelectedProperty.value = null
     }
 }

@@ -14,22 +14,13 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/loadcomment"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginEnd="5dp"
-            tools:ignore="ImageContrastCheck"
-            tools:srcCompat="@tools:sample/avatars"
-            app:userImage="@{comment}"/>
+        android:layout_height="wrap_content"
+        android:onClick="@{()->clickListener.onClick(comment)}">
 
         <TextView
             android:id="@+id/commentname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/loadcomment"
             android:text="@string/name"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -40,7 +31,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/commentname"
-            android:layout_toEndOf="@id/loadcomment"
             android:text="@string/actual_comment"
             app:commentText="@{comment}"/>
     </RelativeLayout>

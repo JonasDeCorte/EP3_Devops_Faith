@@ -9,12 +9,14 @@ data class Post(
     var Text: String = "",
     var Picture: Bitmap? = null,
     var Link: String = "",
-    var UserId: String = ""
+    var UserId: String = "",
+    var UserEmail: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
         parcel.readString().toString(),
         parcel.readParcelable(Bitmap::class.java.classLoader),
+        parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readString().toString()
     ) {
@@ -26,6 +28,7 @@ data class Post(
         parcel.writeParcelable(Picture, flags)
         parcel.writeString(Link)
         parcel.writeString(UserId)
+        parcel.writeString(UserEmail)
     }
 
     override fun describeContents(): Int {
@@ -47,5 +50,36 @@ data class Comment(
     var Id: Long = 0L,
     var Message: String = "",
     var UserId: String = "",
-    var PostId: Long = 0L
-)
+    var PostId: Long = 0L,
+    var UserEmail: String = ""
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readLong(),
+        parcel.readString().toString()) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(Id)
+        parcel.writeString(Message)
+        parcel.writeString(UserId)
+        parcel.writeLong(PostId)
+        parcel.writeString(UserEmail)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Comment> {
+        override fun createFromParcel(parcel: Parcel): Comment {
+            return Comment(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Comment?> {
+            return arrayOfNulls(size)
+        }
+    }
+}

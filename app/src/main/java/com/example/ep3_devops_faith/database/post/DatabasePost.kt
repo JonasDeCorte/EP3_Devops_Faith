@@ -15,7 +15,9 @@ data class DatabasePost(
     var Picture: Bitmap? = null,
     var Link: String = "",
     @ColumnInfo(name = "user_id")
-    var UserId: String = ""
+    var UserId: String = "",
+    @ColumnInfo(name = "user_email")
+    var UserEmail: String = ""
 )
 
 fun List<DatabasePost>.asDomainmodel(): List<Post> {
@@ -25,7 +27,8 @@ fun List<DatabasePost>.asDomainmodel(): List<Post> {
             Text = it.Text,
             Picture = it.Picture,
             Link = it.Link,
-            UserId = it.UserId
+            UserId = it.UserId,
+            UserEmail = it.UserEmail
         )
     }
 }

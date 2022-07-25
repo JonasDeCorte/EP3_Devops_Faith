@@ -57,6 +57,30 @@
         <argument
             android:name="selectedProperty"
             app:argType="com.example.ep3_devops_faith.domain.Post" />
+        <action
+            android:id="@+id/action_postDetailFragment_to_commentDetailFragment"
+            app:destination="@id/commentDetailFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/commentDetailFragment"
+        android:name="com.example.ep3_devops_faith.ui.comment.detail.CommentDetailFragment"
+        android:label="CommentDetailFragment" >
+        <argument
+            android:name="selectedProperty"
+            app:argType="com.example.ep3_devops_faith.domain.Comment" />
+        <action
+            android:id="@+id/action_commentDetailFragment_to_postOverviewFragment"
+            app:destination="@id/postOverviewFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/postOverviewFragment"
+            app:popUpToInclusive="true"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@animator/nav_default_pop_enter_anim" />
     </fragment>
 
 </navigation>

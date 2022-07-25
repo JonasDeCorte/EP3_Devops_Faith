@@ -1,24 +1,28 @@
 package com.example.ep3_devops_faith.ui.comment
 
-import android.net.Uri
-import android.widget.ImageView
+import android.widget.Button
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ep3_devops_faith.domain.Comment
-import com.example.ep3_devops_faith.login.CredentialsManager
 import com.example.ep3_devops_faith.ui.comment.read.CommentAdapter
-
-@BindingAdapter("userImage")
-fun ImageView.setUserProfileImage(item: Comment) {
-    setImageURI(Uri.parse(CredentialsManager.cachedUserProfile!!.pictureURL))
-}
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 @BindingAdapter("commentText")
 fun TextView.setText(item: Comment) {
     item.let {
         text = item.Message
     }
+}
+
+@BindingAdapter("visibleButton")
+fun Button.bindVisibility(visible: Boolean) {
+    isVisible = visible == true
+}
+
+@BindingAdapter("visibleFloatingActionButton")
+fun FloatingActionButton.bindVisibility(visible: Boolean) {
+    isVisible = visible == true
 }
 
 @BindingAdapter("listDataComment")
@@ -33,6 +37,6 @@ fun bindRecyclerViewComment(recyclerView: RecyclerView, data: List<Comment>?) {
 @BindingAdapter("userEmailText")
 fun TextView.setCachedUserEmail(item: Comment) {
     item.let {
-        text = CredentialsManager.cachedUserProfile!!.email
+        text = item.UserEmail
     }
 }

@@ -44,5 +44,6 @@
     <string name="testLink">www.youtube.com</string>
     <string name="actual_comment">Actual Comment</string>
     <string name="enter_comment">Enter Comment...</string>
+    <string name="delete_button">delete button</string>
 
 </resources>

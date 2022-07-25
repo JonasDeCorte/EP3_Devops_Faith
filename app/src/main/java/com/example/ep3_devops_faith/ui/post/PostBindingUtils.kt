@@ -5,7 +5,6 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.ep3_devops_faith.domain.Post
-import com.example.ep3_devops_faith.login.CredentialsManager
 import com.example.ep3_devops_faith.ui.post.read.PostAdapter
 
 @BindingAdapter("postImage")
@@ -37,8 +36,8 @@ fun bindRecyclerViewPost(recyclerView: RecyclerView, data: List<Post>?) {
 }
 
 @BindingAdapter("postUser")
-fun TextView.setCachedUser(item: Post) {
+fun TextView.setUserEmail(item: Post) {
     item.let {
-        text = CredentialsManager.cachedUserProfile!!.email
+        text = item.UserEmail
     }
 }

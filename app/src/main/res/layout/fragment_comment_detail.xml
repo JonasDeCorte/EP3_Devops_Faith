@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="commentViewModel"
+            type="com.example.ep3_devops_faith.ui.comment.detail.CommentDetailViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/commentname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/name"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:userEmailText="@{commentViewModel.selectedProperty}" />
+
+        <EditText
+            android:id="@+id/commenttext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commentname"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:minHeight="48dp"
+            android:text="@string/actual_comment"
+            app:commentText="@{commentViewModel.selectedProperty}"
+            tools:ignore="LabelFor" />
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/commenttext"
+            android:onClickListener="@{() -> commentViewModel.updateCommentClick()}"
+            app:visibleButton= "@{commentViewModel.visibleBool}"
+            android:text="@string/save" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/btnSubmit"
+            android:contentDescription="@string/delete_button"
+            android:onClickListener="@{() -> commentViewModel.deleteCommentClick()}"
+            android:src="@android:drawable/ic_delete"
+            app:visibleFloatingActionButton= "@{commentViewModel.visibleBool}"
+            tools:ignore="SpeakableTextPresentCheck" />
+    </RelativeLayout>
+</layout>

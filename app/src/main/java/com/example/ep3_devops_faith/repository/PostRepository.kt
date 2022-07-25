@@ -25,7 +25,8 @@ class PostRepository(private val faithDatabase: FaithDatabase) {
                 Text = post.Text,
                 Picture = post.Picture,
                 Link = post.Link,
-                UserId = post.UserId
+                UserId = post.UserId,
+                UserEmail = post.UserEmail
             )
             faithDatabase.postDatabaseDao.insert(newDatabasePost)
             Timber.i("insert post success")
