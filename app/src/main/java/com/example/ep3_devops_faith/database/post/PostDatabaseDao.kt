@@ -2,7 +2,6 @@ package com.example.ep3_devops_faith.database.post
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-
 @Dao
 interface PostDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)

@@ -90,7 +90,7 @@ class UserProfileFragment : Fragment() {
         if (resultCode == RESULT_OK && requestCode == pickImage) {
             imageUri = data?.data
             binding.imgProfile.setImageURI(imageUri)
-            binding.imgProfile.setTag(data?.data.toString())
+            binding.imgProfile.tag = data?.data.toString()
             Timber.d(data?.data.toString())
         }
     }
@@ -112,10 +112,10 @@ class UserProfileFragment : Fragment() {
                 override fun onSuccess(userProfile: UserProfile) {
                     CredentialsManager.cachedUserProfile = userProfile
                     updateUI()
-                    val Name = userProfile.getUserMetadata()["Name"] as String?
-                    binding.txtName.setText(Name)
-                    val Role = userProfile.getUserMetadata()["Role"] as String?
-                    binding.txtRole.setText(Role)
+                    val name = userProfile.getUserMetadata()["Name"] as String?
+                    binding.txtName.setText(name)
+                    val role = userProfile.getUserMetadata()["Role"] as String?
+                    binding.txtRole.setText(role)
                     val avatar = userProfile.getUserMetadata()["Picture_url"] as String?
                     binding.imgProfile.setImageURI(Uri.parse(avatar))
                 }
@@ -139,7 +139,7 @@ class UserProfileFragment : Fragment() {
         val metadata = mapOf(
             "Name" to binding.txtName.text.toString().trim(),
             "Role" to binding.txtRole.text.toString().trim(),
-            "Picture_url" to binding.imgProfile.getTag().toString()
+            "Picture_url" to binding.imgProfile.tag.toString()
         )
         usersClient
             .updateMetadata(CredentialsManager.cachedUserProfile!!.getId()!!, metadata)
