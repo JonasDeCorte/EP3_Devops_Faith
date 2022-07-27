@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ep3_devops_faith.domain.Comment
 import com.example.ep3_devops_faith.ui.comment.read.CommentAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import timber.log.Timber
+
 @BindingAdapter("commentText")
 fun TextView.setText(item: Comment) {
     item.let {
@@ -28,8 +30,12 @@ fun FloatingActionButton.bindVisibility(visible: Boolean) {
 @BindingAdapter("listDataComment")
 fun bindRecyclerViewComment(recyclerView: RecyclerView, data: List<Comment>?) {
     if (data.isNullOrEmpty()) {
+        Timber.i("LIST IS EMPTY")
+        Timber.i(data.toString())
         return
     }
+    Timber.i("LIST IS NOOOOOOT EMPTY")
+    Timber.i(data.toString())
     val adapter = recyclerView.adapter as CommentAdapter
     adapter.submitList(data)
 }

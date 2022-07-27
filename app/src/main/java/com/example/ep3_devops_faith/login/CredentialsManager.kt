@@ -9,8 +9,8 @@ import com.auth0.android.result.UserProfile
 
 object CredentialsManager {
     private val ACCESS_TOKEN = "access_token"
-    public var cachedCredentials: Credentials? = null
-    public var cachedUserProfile: UserProfile? = null
+    var cachedCredentials: Credentials? = null
+    var cachedUserProfile: UserProfile? = null
     private lateinit var editor: SharedPreferences.Editor
 
     fun saveCredentials(context: Context, credentials: Credentials) {

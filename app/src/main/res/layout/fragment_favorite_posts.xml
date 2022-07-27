@@ -26,7 +26,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:listData="@{favoritePostsOverviewViewModel.items}"
             tools:listitem="@layout/post_list_item"
-            tools:itemCount="16"/>
+            tools:itemCount="16" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

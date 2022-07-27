@@ -10,6 +10,7 @@
         <variable
             name="commentViewModel"
             type="com.example.ep3_devops_faith.ui.comment.read.CommentViewModel" />
+
     </data>
 
     <ScrollView

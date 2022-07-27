@@ -10,6 +10,7 @@ import com.example.ep3_devops_faith.domain.Post
 
 class PostAdapter(val clickListener: PostListener, val favoriteListener: FavoriteListener) :
     ListAdapter<Post, ViewHolder>(PostDiffCallback()) {
+
     /**
      * Replaces the contents of a view (invoked by the layout manager)
      */
@@ -38,7 +39,6 @@ class ViewHolder(val binding: PostListItemBinding) : RecyclerView.ViewHolder(bin
     companion object {
         fun from(parent: ViewGroup): ViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            println(layoutInflater.toString())
             val binding = PostListItemBinding.inflate(layoutInflater, parent, false)
             return ViewHolder(binding)
         }

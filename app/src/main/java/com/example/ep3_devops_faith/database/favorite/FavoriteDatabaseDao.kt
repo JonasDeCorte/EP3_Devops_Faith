@@ -2,10 +2,11 @@ package com.example.ep3_devops_faith.database.favorite
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+
 @Dao
 interface FavoriteDatabaseDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(databaseFavorite: DatabaseFavorite)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(vararg databaseFavorite: DatabaseFavorite)
 
     @Delete
     fun delete(databaseFavorite: DatabaseFavorite)

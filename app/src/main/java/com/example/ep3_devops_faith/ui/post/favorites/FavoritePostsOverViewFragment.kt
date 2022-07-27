@@ -7,36 +7,39 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentFavoritePostsBinding
+import com.example.ep3_devops_faith.login.CredentialsManager
 import com.example.ep3_devops_faith.ui.post.read.FavoriteListener
 import com.example.ep3_devops_faith.ui.post.read.PostAdapter
 import com.example.ep3_devops_faith.ui.post.read.PostListener
-import com.example.ep3_devops_faith.ui.post.read.PostOverviewFragmentDirections
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 class FavoritePostsOverViewFragment : Fragment() {
     lateinit var binding: FragmentFavoritePostsBinding
     private lateinit var favoritePostsOverviewViewModel: FavoritePostsOverviewViewModel
+    private val role =
+        CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding =
-            DataBindingUtil.inflate(inflater, R.layout.fragment_favorite_posts, container, false)
-
         // setup the db connection
         val application = requireNotNull(this.activity).application
-        val dataSource = FaithDatabase.getInstance(application).postDatabaseDao
+        val dataSource = FaithDatabase.getInstance(application)
         // create the factory + viewmodel
         val viewModelFactory = FavoritePostsOverviewViewModelFactory(dataSource, application)
         favoritePostsOverviewViewModel =
             ViewModelProvider(this, viewModelFactory)[FavoritePostsOverviewViewModel::class.java]
+        binding =
+            DataBindingUtil.inflate(inflater, R.layout.fragment_favorite_posts, container, false)
         // Giving the binding access to the favoritePostsOverviewViewModel
         binding.favoritePostsOverviewViewModel = favoritePostsOverviewViewModel
         // Allows Data Binding to Observe LiveData with the lifecycle of this Fragment
@@ -46,17 +49,20 @@ class FavoritePostsOverViewFragment : Fragment() {
         binding.postList.adapter = PostAdapter(PostListener {
             favoritePostsOverviewViewModel.displayPropertyDetails(it)
         }, FavoriteListener {
-            favoritePostsOverviewViewModel.FavoriteClick(it)
+            favoritePostsOverviewViewModel.favoriteClick(it)
         })
-
         // Observe the navigateToSelectedProperty LiveData and Navigate when it isn't null
         // After navigating, call displayPropertyDetailsComplete() so that the ViewModel is ready
         // for another navigation event.
         favoritePostsOverviewViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
             if (null != it) {
+                if (!role.equals("Jongere")) {
+                    favoritePostsOverviewViewModel.saveStatus(it)
+                }
                 // Must find the NavController from the Fragment
                 this.findNavController().navigate(
-                    PostOverviewFragmentDirections.actionPostOverviewFragmentToPostDetailFragment(it)
+                    FavoritePostsOverViewFragmentDirections.actionFavoritePostsOverViewFragmentToPostDetailFragment(
+                        it)
                 )
                 // Tell the ViewModel we've made the navigate call to prevent multiple navigation
                 favoritePostsOverviewViewModel.displayPropertyDetailsComplete()
@@ -80,10 +86,12 @@ class FavoritePostsOverViewFragment : Fragment() {
                     })
             }
         })
-        favoritePostsOverviewViewModel.items.observe(viewLifecycleOwner, {
-            Timber.i(" SOMETHING RANDOM")
-            showSnackBar("NOT QUITE SURE")
-        })
+        viewLifecycleOwner.lifecycleScope.launch {
+            favoritePostsOverviewViewModel.items.observe(viewLifecycleOwner, { list ->
+                showSnackBar(list.toString())
+            })
+        }
+
         return binding.root
     }
 

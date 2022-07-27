@@ -13,6 +13,7 @@ import com.example.ep3_devops_faith.repository.CommentRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class CommentViewModel(post: Post, val database: CommentDatabaseDao, app: Application) :
     AndroidViewModel(app) {
@@ -27,6 +28,7 @@ class CommentViewModel(post: Post, val database: CommentDatabaseDao, app: Applic
         _saveEvent.value = false
         viewModelScope.launch {
             comments = repository.allCommentForPost(post.Id)
+            Timber.i(comments!!.value.toString())
         }
     }
 

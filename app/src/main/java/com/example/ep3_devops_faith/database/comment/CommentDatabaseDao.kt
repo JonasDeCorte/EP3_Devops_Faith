@@ -20,4 +20,7 @@ interface CommentDatabaseDao {
 
     @Query("SELECT COUNT(*) FROM comment_table")
     fun getDataCount(): Int
+
+    @Query("SELECT COUNT(*) FROM comment_table WHERE user_id = :user_id AND post_id = :post_id")
+    fun getDataCountForUser(post_id: Long, user_id: String): Int
 }

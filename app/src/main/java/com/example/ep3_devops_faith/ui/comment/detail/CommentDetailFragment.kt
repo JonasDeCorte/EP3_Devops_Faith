@@ -64,6 +64,7 @@ class CommentDetailFragment : Fragment() {
                 }
             }
         })
+
         return binding.root
     }
 

@@ -102,6 +102,7 @@ class UserProfileFragment : Fragment() {
         // Create the user API client
         val usersClient =
             UsersAPIClient(account, CredentialsManager.cachedCredentials!!.accessToken)
+        Timber.i("Userclient: $usersClient")
         // Get the full user profile
         usersClient.getProfile(CredentialsManager.cachedUserProfile!!.getId()!!)
             .start(object : Callback<UserProfile, ManagementException> {
@@ -111,6 +112,8 @@ class UserProfileFragment : Fragment() {
 
                 override fun onSuccess(userProfile: UserProfile) {
                     CredentialsManager.cachedUserProfile = userProfile
+                    Timber.i("UserProfile: ${userProfile.getUserMetadata()}")
+                    Timber.i("credentials: ${CredentialsManager.cachedUserProfile!!.getUserMetadata()}")
                     updateUI()
                     val name = userProfile.getUserMetadata()["Name"] as String?
                     binding.txtName.setText(name)
@@ -128,19 +131,26 @@ class UserProfileFragment : Fragment() {
         }
         val usersClient =
             UsersAPIClient(account, CredentialsManager.cachedCredentials!!.accessToken)
-
+        Timber.i("usersClient: $usersClient")
         var bitmap: Bitmap? = null
         when {
-
             binding.imgProfile.drawable != null -> {
                 bitmap = (binding.imgProfile.drawable as BitmapDrawable).bitmap
             }
         }
-        val metadata = mapOf(
-            "Name" to binding.txtName.text.toString().trim(),
-            "Role" to binding.txtRole.text.toString().trim(),
-            "Picture_url" to binding.imgProfile.tag.toString()
-        )
+        var metadata: Map<String, String>
+        if (binding.imgProfile.tag != null) {
+            metadata = mapOf(
+                "Name" to binding.txtName.text.toString().trim(),
+                "Role" to binding.txtRole.text.toString().trim(),
+                "Picture_url" to binding.imgProfile.tag.toString()
+            )
+        } else {
+            metadata = mapOf(
+                "Name" to binding.txtName.text.toString().trim(),
+                "Role" to binding.txtRole.text.toString().trim())
+        }
+
         usersClient
             .updateMetadata(CredentialsManager.cachedUserProfile!!.getId()!!, metadata)
             .start(object : Callback<UserProfile, ManagementException> {
@@ -150,6 +160,7 @@ class UserProfileFragment : Fragment() {
 
                 override fun onSuccess(profile: UserProfile) {
                     CredentialsManager.cachedUserProfile = profile
+                    Timber.i("Profile: $profile")
                     updateUI()
                     showSnackBar("Successful")
                 }

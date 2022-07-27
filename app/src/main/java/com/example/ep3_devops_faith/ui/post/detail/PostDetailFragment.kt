@@ -73,6 +73,16 @@ class PostDetailFragment : Fragment() {
                 commentViewModel.displayPropertyDetailsComplete()
             }
         })
+        /*val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        if (!role.equals(context?.getString(R.string.Type_Jongere))) {
+            postViewModel.statusEvent.observe(viewLifecycleOwner, {
+                if (post != null) {
+                   // postViewModel.saveStatus(post)
+                    Timber.i("observed = ${post}")
+                    postViewModel.statusEventDone(post)
+                }
+            })
+        }*/
         return binding.root
     }
 

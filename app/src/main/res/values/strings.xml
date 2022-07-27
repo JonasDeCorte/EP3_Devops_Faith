@@ -45,5 +45,9 @@
     <string name="actual_comment">Actual Comment</string>
     <string name="enter_comment">Enter Comment...</string>
     <string name="delete_button">delete button</string>
+    <string name="Enum_Answered">ANSWERED</string>
+    <string name="Enum_Read">READ</string>
+    <string name="Enum_New">NEW</string>
+    <string name="Type_Jongere">Jongere</string>
 
 </resources>

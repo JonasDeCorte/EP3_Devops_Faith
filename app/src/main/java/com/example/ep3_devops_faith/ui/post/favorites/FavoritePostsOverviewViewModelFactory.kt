@@ -3,10 +3,10 @@ package com.example.ep3_devops_faith.ui.post.favorites
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.ep3_devops_faith.database.post.PostDatabaseDao
+import com.example.ep3_devops_faith.database.FaithDatabase
 
 class FavoritePostsOverviewViewModelFactory(
-    private val dataSource: PostDatabaseDao,
+    private val dataSource: FaithDatabase,
     private val application: Application
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

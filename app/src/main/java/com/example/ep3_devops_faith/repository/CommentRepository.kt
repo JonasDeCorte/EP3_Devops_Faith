@@ -12,7 +12,7 @@ import timber.log.Timber
 
 class CommentRepository(private val faithDatabase: FaithDatabase) {
 
-    suspend fun allCommentForPost(postId: Long): LiveData<List<Comment>> {
+    fun allCommentForPost(postId: Long): LiveData<List<Comment>> {
         return Transformations.map(faithDatabase.commentDatabaseDao.getAllCommentForPostWithId(
             postId)) {
             it.asDomainmodel()
@@ -36,6 +36,11 @@ class CommentRepository(private val faithDatabase: FaithDatabase) {
     suspend fun count(): Int {
         return withContext(Dispatchers.IO) {
             faithDatabase.commentDatabaseDao.getDataCount()
+        }
+    }
+    suspend fun countForUser(postId: Long, user_id: String): Int {
+        return withContext(Dispatchers.IO) {
+            faithDatabase.commentDatabaseDao.getDataCountForUser(postId, user_id)
         }
     }
 

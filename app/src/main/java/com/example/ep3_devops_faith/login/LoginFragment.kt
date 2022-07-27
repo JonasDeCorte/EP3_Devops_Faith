@@ -1,5 +1,4 @@
 package com.example.ep3_devops_faith.login
-
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,17 +12,18 @@ import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
 import com.auth0.android.callback.Callback
+import com.auth0.android.management.ManagementException
+import com.auth0.android.management.UsersAPIClient
 import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.databinding.FragmentLoginBinding
 import com.google.android.material.snackbar.Snackbar
-
+import timber.log.Timber
 class LoginFragment : Fragment() {
     private lateinit var account: Auth0
     private lateinit var binding: FragmentLoginBinding
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -41,7 +41,6 @@ class LoginFragment : Fragment() {
         checkIfToken()
         return binding.root
     }
-
     private fun setClickListeners() {
         binding.buttonLogin.setOnClickListener { loginWithBrowser() }
         binding.buttonLogout.setOnClickListener { logout() }
@@ -51,7 +50,6 @@ class LoginFragment : Fragment() {
             Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeFragment)
         )
     }
-
     private fun checkIfToken() {
         val token = CredentialsManager.getAccessToken(requireContext())
         if (token != null) {
@@ -61,22 +59,15 @@ class LoginFragment : Fragment() {
             Toast.makeText(context, "Token doesn't exist", Toast.LENGTH_SHORT).show()
         }
     }
-
     @SuppressLint("SetTextI18n")
     private fun updateUI() {
         binding.buttonLogout.isEnabled = CredentialsManager.cachedCredentials != null
         binding.metadataPanel.isVisible = CredentialsManager.cachedCredentials != null
         binding.buttonLogin.isEnabled = CredentialsManager.cachedCredentials == null
         binding.userProfile.isVisible = CredentialsManager.cachedCredentials != null
-
         binding.userProfile.text =
             "Name: ${CredentialsManager.cachedUserProfile?.name ?: ""}\n" +
                     "Email: ${CredentialsManager.cachedUserProfile?.email ?: ""}"
-
-        /* if (cachedUserProfile == null) {
-             binding.inputEditMetadataName.setText("")
-             binding.inputEditMetadataRole.setText("")
-         }*/
     }
 private fun loginWithBrowser() {
     // Setup the WebAuthProvider, using the custom scheme and scope.
@@ -84,7 +75,6 @@ private fun loginWithBrowser() {
         .withScheme(getString(R.string.com_auth0_scheme))
         .withScope("openid profile email read:current_user update:current_user_metadata")
         .withAudience("https://${getString(R.string.authDomain)}/api/v2/")
-
         // Launch the authentication passing the callback where the results will be received
         .start(requireContext(), object : Callback<Credentials, AuthenticationException> {
             override fun onFailure(exception: AuthenticationException) {
@@ -110,14 +100,12 @@ private fun logout() {
                 CredentialsManager.cachedUserProfile = null
                 updateUI()
             }
-
             override fun onFailure(exception: AuthenticationException) {
                 updateUI()
                 showSnackBar("Failure: ${exception.getCode()}")
             }
         })
 }
-
     private fun showUserProfile() {
         if (CredentialsManager.cachedCredentials == null) {
             return
@@ -133,62 +121,35 @@ private fun logout() {
                 override fun onFailure(exception: AuthenticationException) {
                     showSnackBar("Failure: ${exception.getCode()}")
                 }
-
                 override fun onSuccess(profile: UserProfile) {
                     CredentialsManager.cachedUserProfile = profile
+                    Timber.i("credentialsLogin: ${CredentialsManager.cachedUserProfile!!.getUserMetadata()}")
                     updateUI()
+                    getUserMetadata()
                 }
             })
     }
-
-    /* private fun getUserMetadata() {
-         if (cachedCredentials == null || cachedUserProfile == null) {
-             return
-         }
-         // Create the user API client
-         val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
-         // Get the full user profile
-         usersClient.getProfile(cachedUserProfile!!.getId()!!)
-             .start(object : Callback<UserProfile, ManagementException> {
-                 override fun onFailure(exception: ManagementException) {
-                     showSnackBar("Failure: ${exception.getCode()}")
-                 }
-
-                 override fun onSuccess(userProfile: UserProfile) {
-                     cachedUserProfile = userProfile
-                     updateUI()
-                     val Name = userProfile.getUserMetadata()["Name"] as String?
-                     binding.inputEditMetadataName.setText(Name)
-                     val Role = userProfile.getUserMetadata()["Role"] as String?
-                     binding.inputEditMetadataRole.setText(Role)
-                 }
-             })
-     }
-
-     private fun patchUserMetadata() {
-         if (cachedCredentials == null) {
-             return
-         }
-         val usersClient = UsersAPIClient(account, cachedCredentials!!.accessToken)
-         val metadata = mapOf(
-             "Name" to binding.inputEditMetadataName.text.toString().trim(),
-             "Role" to binding.inputEditMetadataRole.text.toString().trim()
-         )
-         usersClient
-             .updateMetadata(cachedUserProfile!!.getId()!!, metadata)
-             .start(object : Callback<UserProfile, ManagementException> {
-                 override fun onFailure(exception: ManagementException) {
-                     showSnackBar("Failure: ${exception.getCode()}")
-                 }
-
-                 override fun onSuccess(profile: UserProfile) {
-                     cachedUserProfile = profile
-                     updateUI()
-                     showSnackBar("Successful")
-                 }
-             })
-     }
- */
+    private fun getUserMetadata() {
+        if (CredentialsManager.cachedCredentials == null || CredentialsManager.cachedUserProfile == null) {
+            return
+        }
+        // Create the user API client
+        val usersClient =
+            UsersAPIClient(account, CredentialsManager.cachedCredentials!!.accessToken)
+        Timber.i("Userclient: $usersClient")
+        // Get the full user profile
+        usersClient.getProfile(CredentialsManager.cachedUserProfile!!.getId()!!)
+            .start(object : Callback<UserProfile, ManagementException> {
+                override fun onFailure(exception: ManagementException) {
+                    showSnackBar("Failure: ${exception.getCode()}")
+                }
+                override fun onSuccess(userProfile: UserProfile) {
+                    CredentialsManager.cachedUserProfile = userProfile
+                    Timber.i("UserProfile: ${userProfile.getUserMetadata()}")
+                    Timber.i("credentials: ${CredentialsManager.cachedUserProfile!!.getUserMetadata()}")
+                }
+            })
+    }
     private fun showSnackBar(text: String) {
         Snackbar.make(
             binding.root,

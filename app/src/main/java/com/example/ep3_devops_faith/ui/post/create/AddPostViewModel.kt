@@ -13,6 +13,7 @@ import com.example.ep3_devops_faith.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class AddPostViewModel(val database: PostDatabaseDao, application: Application) :
     AndroidViewModel(application) {
@@ -42,6 +43,8 @@ class AddPostViewModel(val database: PostDatabaseDao, application: Application) 
             post.Link = link!!
             post.UserId = userId
             post.UserEmail = userEmail
+            post.Status = "NEW"
+            Timber.i("Savepost $post")
             savePostWithRepository(post)
         }
     }

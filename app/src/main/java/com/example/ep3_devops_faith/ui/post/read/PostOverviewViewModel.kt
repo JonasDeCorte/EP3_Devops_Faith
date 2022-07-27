@@ -6,8 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ep3_devops_faith.database.FaithDatabase
-import com.example.ep3_devops_faith.database.post.PostDatabaseDao
 import com.example.ep3_devops_faith.domain.Post
+import com.example.ep3_devops_faith.login.CredentialsManager
+import com.example.ep3_devops_faith.repository.CommentRepository
 import com.example.ep3_devops_faith.repository.FavoriteRepository
 import com.example.ep3_devops_faith.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,11 +16,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
+class PostOverviewViewModel(val database: FaithDatabase, app: Application) :
     AndroidViewModel(app) {
     private val db = FaithDatabase.getInstance(app.applicationContext)
     private val repository = PostRepository(db)
     private val favoriteRepository = FavoriteRepository(db)
+    private val commentRepository = CommentRepository(db)
     val posts = repository.allPosts
 
     // Internally, we use a MutableLiveData to handle navigation to the selected property
@@ -48,7 +50,7 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
     val event: LiveData<Post?>
         get() = _Event
 
-    fun FavoriteClick(post: Post) {
+    fun favoriteClick(post: Post) {
         _Event.value = post
     }
 
@@ -79,11 +81,34 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
 
     suspend fun isFavoriteWithRepository(post: Post): Boolean {
         val fav = favoriteRepository.get(post.Id)
-        Timber.i("fav = " + fav.toString())
         if (fav == null) {
             return false
         }
         return true
+    }
+
+    fun saveStatus(post: Post) {
+        Timber.i("Save Status")
+        viewModelScope.launch {
+            var commentsForUser = commentRepository.countForUser(post.Id,
+                CredentialsManager.cachedUserProfile?.getId()!!)
+            Timber.i("Comments for user = $commentsForUser")
+            Timber.i("postStatus = ${post.Status}")
+            if (post.Status == "NEW") {
+                Timber.i("Save Status ${post.Status} == NEW")
+                saveStatusWithRepository("READ", post)
+            }
+            if (commentsForUser > 0 && post.Status == "READ") {
+                Timber.i("Save Status ${post.Status} == READ")
+                saveStatusWithRepository("ANSWERED", post)
+            }
+        }
+    }
+
+    private suspend fun saveStatusWithRepository(status: String, post: Post) {
+        withContext(Dispatchers.IO) {
+            repository.update(status, post)
+        }
     }
 
     private suspend fun saveFavoriteWithRepository(post: Post) {
@@ -91,6 +116,7 @@ class PostOverviewViewModel(val database: PostDatabaseDao, app: Application) :
             favoriteRepository.insert(post)
         }
     }
+
     private suspend fun removeFavoriteWithRepository(post: Post) {
         withContext(Dispatchers.IO) {
             favoriteRepository.delete(post)

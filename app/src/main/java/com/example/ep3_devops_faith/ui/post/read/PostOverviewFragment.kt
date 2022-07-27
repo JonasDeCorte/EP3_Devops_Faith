@@ -11,13 +11,14 @@ import androidx.navigation.fragment.findNavController
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentPostOverviewBinding
+import com.example.ep3_devops_faith.login.CredentialsManager
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 class PostOverviewFragment : Fragment() {
     lateinit var binding: FragmentPostOverviewBinding
     private lateinit var postViewModel: PostOverviewViewModel
-
+    private val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -28,7 +29,7 @@ class PostOverviewFragment : Fragment() {
 
         // setup the db connection
         val application = requireNotNull(this.activity).application
-        val dataSource = FaithDatabase.getInstance(application).postDatabaseDao
+        val dataSource = FaithDatabase.getInstance(application)
         // create the factory + viewmodel
         val viewModelFactory = PostOverviewViewModelFactory(dataSource, application)
         postViewModel =
@@ -42,14 +43,18 @@ class PostOverviewFragment : Fragment() {
         binding.postList.adapter = PostAdapter(PostListener {
             postViewModel.displayPropertyDetails(it)
         }, FavoriteListener {
-            postViewModel.FavoriteClick(it)
+            postViewModel.favoriteClick(it)
         })
 
         // Observe the navigateToSelectedProperty LiveData and Navigate when it isn't null
         // After navigating, call displayPropertyDetailsComplete() so that the ViewModel is ready
         // for another navigation event.
+
         postViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
             if (null != it) {
+                if (!role.equals("Jongere")) {
+                    postViewModel.saveStatus(it)
+                }
                 // Must find the NavController from the Fragment
                 this.findNavController().navigate(
                     PostOverviewFragmentDirections.actionPostOverviewFragmentToPostDetailFragment(it)
@@ -75,6 +80,7 @@ class PostOverviewFragment : Fragment() {
                 })
             }
         })
+
         return binding.root
     }
     private fun showSnackBar(text: String) {
