@@ -10,9 +10,9 @@ data class DatabaseFavorite(
     @PrimaryKey(autoGenerate = true)
     var Id: Long = 0L,
     @ColumnInfo(name = "user_id")
-    val UserId: String = "",
+    var UserId: String = "",
     @ColumnInfo(name = "post_id")
-    val PostId: Long = 0L
+    var PostId: Long = 0L
 )
 
 fun List<DatabaseFavorite>.asDomainmodel(): List<Favorite> {

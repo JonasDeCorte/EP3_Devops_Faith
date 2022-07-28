@@ -5,10 +5,10 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.ep3_devops_faith.database.FaithDatabase
+import com.example.ep3_devops_faith.database.favorite.DatabaseFavorite
+import com.example.ep3_devops_faith.database.favorite.FavoriteDatabaseDao
 import com.example.ep3_devops_faith.database.post.DatabasePost
 import com.example.ep3_devops_faith.database.post.PostDatabaseDao
-import com.example.ep3_devops_faith.database.user.DatabaseUser
-import com.example.ep3_devops_faith.database.user.UserDatabaseDao
 import junit.framework.Assert.assertEquals
 import org.junit.After
 import org.junit.Before
@@ -19,7 +19,7 @@ import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class FaithDatabaseTest {
-    private lateinit var userDatabaseDao: UserDatabaseDao
+    private lateinit var favoriteDatabaseDao: FavoriteDatabaseDao
     private lateinit var postDatabaseDao: PostDatabaseDao
     private lateinit var database: FaithDatabase
 
@@ -36,7 +36,7 @@ class FaithDatabaseTest {
         )
             .allowMainThreadQueries()
             .build()
-        userDatabaseDao = database.userDatabaseDao
+        favoriteDatabaseDao = database.favoriteDatabaseDao
         postDatabaseDao = database.postDatabaseDao
     }
 
@@ -48,25 +48,40 @@ class FaithDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    fun insertAndGetUser() {
-        val databaseUser = DatabaseUser()
-        databaseUser.Auth0Key = "insertAndGetUser"
-        userDatabaseDao.insert(databaseUser)
-        val user = userDatabaseDao.getByKey("insertAndGetUser")
-        assertEquals(user.Auth0Key, "insertAndGetUser")
-    }
-
-    @Test
-    @Throws(Exception::class)
-    fun updateAndGetUser() {
-        val databaseUser = DatabaseUser()
-        databaseUser.Auth0Key = "insertAndGetUser"
-        userDatabaseDao.insert(databaseUser)
-        val user = userDatabaseDao.getByKey("insertAndGetUser")
-        assertEquals(user.Auth0Key, "insertAndGetUser")
-        user.Auth0Key = "editAuth0Key"
-        userDatabaseDao.update(user)
-        assertEquals(user.Auth0Key, "editAuth0Key")
+    fun insertAndGetFavorite() {
+        for (i in 1 until 6 step 1) {
+            val databasePost = DatabasePost()
+            databasePost.Text = "insertAndGetPost$i"
+            databasePost.Link = "insertAndGetPost$i"
+            postDatabaseDao.insert(databasePost)
+            println("$databasePost")
+        }
+        assertEquals(5, postDatabaseDao.getDataCount())
+        postDatabaseDao.getAllEntries()
+        var databaseFavorite = DatabaseFavorite()
+        databaseFavorite.UserId = "userId"
+        databaseFavorite.PostId = 1.toLong()
+        favoriteDatabaseDao.insert(databaseFavorite)
+        println("eerste db fav $databaseFavorite")
+        databaseFavorite.UserId = "user"
+        databaseFavorite.PostId = 1.toLong()
+        favoriteDatabaseDao.insert(databaseFavorite)
+        println("tweede db fav $databaseFavorite")
+        var list = favoriteDatabaseDao.getDataCountFavorites("userId")
+        assertEquals(1, list.size)
+        assertEquals(2, favoriteDatabaseDao.getDataCount())
+        databaseFavorite.UserId = "gebruiker"
+        databaseFavorite.PostId = 1.toLong()
+        favoriteDatabaseDao.insert(databaseFavorite)
+        println("derde db fav $databaseFavorite")
+        assertEquals(3, favoriteDatabaseDao.getDataCount())
+        databaseFavorite.UserId = "userId"
+        databaseFavorite.PostId = 2.toLong()
+        favoriteDatabaseDao.insert(databaseFavorite)
+        println("vierde db fav $databaseFavorite")
+        list = favoriteDatabaseDao.getDataCountFavorites("userId")
+        println("list=  $list")
+        assertEquals(2, list.size)
     }
 
     @Test
@@ -76,7 +91,6 @@ class FaithDatabaseTest {
             val databasePost = DatabasePost()
             databasePost.Text = "insertAndGetPost$i"
             databasePost.Link = "insertAndGetPost$i"
-            databasePost.UserId = i.toLong()
             postDatabaseDao.insert(databasePost)
             println("$databasePost")
         }

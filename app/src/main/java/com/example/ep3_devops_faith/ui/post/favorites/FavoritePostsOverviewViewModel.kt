@@ -27,7 +27,7 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
     init {
         viewModelScope.launch {
             initFavs()
-            Timber.i("items === $items.value.toString()")
+            Timber.i("items === ${items.value?.size}")
         }
     }
     // TODO somehow move this to repo level.

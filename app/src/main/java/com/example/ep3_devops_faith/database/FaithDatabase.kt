@@ -15,7 +15,7 @@ import com.example.ep3_devops_faith.utils.ImageConverter
 
 @TypeConverters(ImageConverter::class)
 @Database(entities = [DatabasePost::class, DatabaseComment::class, DatabaseFavorite::class],
-    version = 12,
+    version = 13,
     exportSchema = false)
 abstract class FaithDatabase : RoomDatabase() {
     abstract val postDatabaseDao: PostDatabaseDao

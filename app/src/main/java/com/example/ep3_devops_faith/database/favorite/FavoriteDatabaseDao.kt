@@ -6,7 +6,7 @@ import androidx.room.*
 @Dao
 interface FavoriteDatabaseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg databaseFavorite: DatabaseFavorite)
+    fun insert(databaseFavorite: DatabaseFavorite)
 
     @Delete
     fun delete(databaseFavorite: DatabaseFavorite)

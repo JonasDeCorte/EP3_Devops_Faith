@@ -14,10 +14,12 @@ class FavoriteRepository(private val faithDatabase: FaithDatabase) {
         // switch context to IO thread
         withContext(Dispatchers.IO) {
             Timber.i("insert FAV called")
+            Timber.i("post insert UserId ${post.UserId} ")
             val newDatabaseFavorite = DatabaseFavorite(
                 PostId = post.Id,
-                UserId = post.UserId
+                UserId = CredentialsManager.cachedUserProfile?.getId()!!
             )
+            Timber.i("newDatabaseFavorite $newDatabaseFavorite")
             faithDatabase.favoriteDatabaseDao.insert(newDatabaseFavorite)
             Timber.i("insert FAV success")
         }
@@ -29,6 +31,7 @@ class FavoriteRepository(private val faithDatabase: FaithDatabase) {
     }
     suspend fun countUserFav(): List<Long> {
         return withContext(Dispatchers.IO) {
+            Timber.i("countUserFavUserId ===  ${CredentialsManager.cachedUserProfile?.getId()!!}")
             faithDatabase.favoriteDatabaseDao.getDataCountFavorites(CredentialsManager.cachedUserProfile?.getId()!!)
         }
     }

@@ -22,8 +22,9 @@ data class Comment(
     var PostId: Long = 0L,
     var UserEmail: String = ""
 ) : Parcelable
+@Parcelize
 data class Favorite(
     var Id: Long = 0L,
     var UserId: String = "",
     var PostId: Long = 0L
-)
+) : Parcelable
