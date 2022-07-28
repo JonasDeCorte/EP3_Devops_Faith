@@ -1,7 +1,10 @@
 package com.example.ep3_devops_faith.ui.post.favorites
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.domain.Post
 import com.example.ep3_devops_faith.login.CredentialsManager
@@ -21,36 +24,33 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
     private val commentRepository = CommentRepository(db)
     private val _items: MutableLiveData<List<Post>> = MutableLiveData(listOf())
     val items: LiveData<List<Post>> = _items
-
     init {
         viewModelScope.launch {
             initFavs()
-            Timber.i(items!!.value.toString())
+            Timber.i("items === $items.value.toString()")
         }
     }
-
     // TODO somehow move this to repo level.
     private fun initFavs() {
         viewModelScope.launch {
-            val favos =
-                getUserFavorites(CredentialsManager.cachedUserProfile?.getId()!!) // returns a list of postId's
-            Timber.i("Favos = " + favos.value?.size.toString())
-            favos.asFlow().collect {
-                it.forEach { postId ->
-                    val dbPost = repository.get(postId) // returns DatabasePost
-                    // make it a domain model Post
-                    val post = Post(
-                        Text = dbPost.Text,
-                        UserId = dbPost.UserId,
-                        UserEmail = dbPost.UserEmail,
-                        Link = dbPost.Link,
-                        Picture = dbPost.Picture,
-                        Id = dbPost.Id,
-                        Status = dbPost.Status
-                    )
-                    // add to LiveData list.
-                    _items.value = _items.value?.plus(post) ?: listOf(post)
-                }
+            val count = getUserFavoritesCount()
+            Timber.i("amount of favorites for current logged in user === $count")
+            count.forEach {
+                Timber.i("postId $it")
+                val dbPost = repository.get(it) // returns DatabasePost
+                Timber.i("DBPOST ASFLOW ==== $dbPost")
+                // make it a domain model Post
+                val post = Post(
+                    Text = dbPost.Text,
+                    UserId = dbPost.UserId,
+                    UserEmail = dbPost.UserEmail,
+                    Link = dbPost.Link,
+                    Picture = dbPost.Picture,
+                    Id = dbPost.Id,
+                    Status = dbPost.Status
+                )
+                // add to LiveData list.
+                _items.value = _items.value?.plus(post) ?: listOf(post)
             }
         }
     }
@@ -58,7 +58,7 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
     fun saveStatus(post: Post) {
         Timber.i("Save Status")
         viewModelScope.launch {
-            var commentsForUser = commentRepository.countForUser(post.Id,
+            val commentsForUser = commentRepository.countForUser(post.Id,
                 CredentialsManager.cachedUserProfile?.getId()!!)
             Timber.i("Comments for user = $commentsForUser")
             Timber.i("postStatus = ${post.Status}")
@@ -72,8 +72,9 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
             }
         }
     }
-    fun getUserFavorites(userName: String): LiveData<List<Long>> {
-        return favoriteRepository.getUserFavorites(userName)
+
+    private suspend fun getUserFavoritesCount(): List<Long> {
+        return favoriteRepository.countUserFav()
     }
 
     // Internally, we use a MutableLiveData to handle navigation to the selected property
@@ -98,16 +99,16 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
         _navigateToSelectedProperty.value = null
     }
 
-    private val _Event = MutableLiveData<Post?>()
+    private val _event = MutableLiveData<Post?>()
     val event: LiveData<Post?>
-        get() = _Event
+        get() = _event
 
     fun favoriteClick(post: Post) {
-        _Event.value = post
+        _event.value = post
     }
 
-    fun EventDone() {
-        _Event.value = null
+    fun eventDone() {
+        _event.value = null
     }
 
     fun saveFavorite(post: Post) {
@@ -126,15 +127,15 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
         val result = MutableLiveData<Boolean>()
         viewModelScope.launch {
             val returnedVal = isFavoriteWithRepository(post)
-            Timber.i("returned value isfav =  " + returnedVal.toString())
+            Timber.i("returned value isfav =  $returnedVal")
             result.postValue(returnedVal)
         }
         return result
     }
 
-    suspend fun isFavoriteWithRepository(post: Post): Boolean {
+    private suspend fun isFavoriteWithRepository(post: Post): Boolean {
         val fav = favoriteRepository.get(post.Id)
-        Timber.i("fav = " + fav.toString())
+        Timber.i("fav = $fav")
         if (fav == null) {
             return false
         }

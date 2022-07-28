@@ -19,4 +19,7 @@ interface FavoriteDatabaseDao {
 
     @Query("SELECT COUNT(*) FROM favorite_table")
     fun getDataCount(): Int
+
+    @Query("SELECT post_id FROM favorite_table WHERE user_id = :user_id")
+    fun getDataCountFavorites(user_id: String): List<Long>
 }

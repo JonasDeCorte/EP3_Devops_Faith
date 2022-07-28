@@ -10,6 +10,10 @@
         android:title="favorite"
         />
     <item
+        android:id="@+id/loginFragment"
+        android:title="Login"
+        />
+    <item
         android:id="@+id/homeFragment"
         android:title="@string/home" />
     <item

@@ -75,20 +75,20 @@ class FavoritePostsOverViewFragment : Fragment() {
                         if (isFav) {
                             favoritePostsOverviewViewModel.removeFavorite(post)
                             showSnackBar("REMOVED POST FROM FAVORITES")
-                            Timber.i("REMOVED POST FROM FAVORITES")
-                            favoritePostsOverviewViewModel.EventDone()
+                            Timber.i("REMOVED POST FROM FAVORITES $post")
+                            favoritePostsOverviewViewModel.eventDone()
                         } else {
                             favoritePostsOverviewViewModel.saveFavorite(post)
-                            favoritePostsOverviewViewModel.EventDone()
-                            Timber.i(" SAVED POST TO FAVORITES")
                             showSnackBar("SAVED POST TO FAVORITES")
+                            Timber.i(" SAVED POST TO FAVORITES $post")
+                            favoritePostsOverviewViewModel.eventDone()
                         }
                     })
             }
         })
         viewLifecycleOwner.lifecycleScope.launch {
             favoritePostsOverviewViewModel.items.observe(viewLifecycleOwner, { list ->
-                showSnackBar(list.toString())
+                showSnackBar("items")
             })
         }
 

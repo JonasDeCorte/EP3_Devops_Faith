@@ -120,7 +120,9 @@ class UserProfileFragment : Fragment() {
                     val role = userProfile.getUserMetadata()["Role"] as String?
                     binding.txtRole.setText(role)
                     val avatar = userProfile.getUserMetadata()["Picture_url"] as String?
-                    binding.imgProfile.setImageURI(Uri.parse(avatar))
+                    if (avatar != null) {
+                        binding.imgProfile.setImageURI(Uri.parse(avatar))
+                    }
                 }
             })
     }

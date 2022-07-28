@@ -66,11 +66,11 @@ fun Button.setStatus(item: Post) {
 fun bindRecyclerViewPost(recyclerView: RecyclerView, data: List<Post>?) {
     if (data.isNullOrEmpty()) {
         Timber.i("LIST IS EMPTY")
-        Timber.i(data.toString())
+        Timber.i("bindRecyclerViewPost=== $data")
         return
     }
     Timber.i("LIST IS NOOOOOOT EMPTY")
-    Timber.i(data.toString())
+    Timber.i(" bindRecyclerViewPost ==== $data")
     val adapter = recyclerView.adapter as PostAdapter
     adapter.submitList(data)
 }

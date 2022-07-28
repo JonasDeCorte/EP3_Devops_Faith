@@ -1,6 +1,5 @@
 package com.example.ep3_devops_faith.repository
 
-import androidx.lifecycle.LiveData
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.database.favorite.DatabaseFavorite
 import com.example.ep3_devops_faith.domain.Post
@@ -23,14 +22,14 @@ class FavoriteRepository(private val faithDatabase: FaithDatabase) {
             Timber.i("insert FAV success")
         }
     }
-
-    fun getUserFavorites(userName: String): LiveData<List<Long>> {
-        return faithDatabase.favoriteDatabaseDao.getUserFavorites(userName)
-    }
-
     suspend fun count(): Int {
         return withContext(Dispatchers.IO) {
             faithDatabase.favoriteDatabaseDao.getDataCount()
+        }
+    }
+    suspend fun countUserFav(): List<Long> {
+        return withContext(Dispatchers.IO) {
+            faithDatabase.favoriteDatabaseDao.getDataCountFavorites(CredentialsManager.cachedUserProfile?.getId()!!)
         }
     }
 
