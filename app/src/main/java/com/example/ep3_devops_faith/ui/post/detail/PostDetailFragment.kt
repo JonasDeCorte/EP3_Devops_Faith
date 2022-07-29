@@ -2,14 +2,15 @@ package com.example.ep3_devops_faith.ui.post.detail
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
+import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentPostDetailBinding
 import com.example.ep3_devops_faith.domain.Post
@@ -73,16 +74,7 @@ class PostDetailFragment : Fragment() {
                 commentViewModel.displayPropertyDetailsComplete()
             }
         })
-        /*val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
-        if (!role.equals(context?.getString(R.string.Type_Jongere))) {
-            postViewModel.statusEvent.observe(viewLifecycleOwner, {
-                if (post != null) {
-                   // postViewModel.saveStatus(post)
-                    Timber.i("observed = ${post}")
-                    postViewModel.statusEventDone(post)
-                }
-            })
-        }*/
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -106,5 +98,20 @@ class PostDetailFragment : Fragment() {
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }

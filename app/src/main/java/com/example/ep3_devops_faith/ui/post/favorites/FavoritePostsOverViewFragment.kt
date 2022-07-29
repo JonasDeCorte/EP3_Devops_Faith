@@ -1,14 +1,14 @@
 package com.example.ep3_devops_faith.ui.post.favorites
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentFavoritePostsBinding
@@ -56,9 +56,6 @@ class FavoritePostsOverViewFragment : Fragment() {
         // for another navigation event.
         favoritePostsOverviewViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
             if (null != it) {
-                if (!role.equals("Jongere")) {
-                    favoritePostsOverviewViewModel.saveStatus(it)
-                }
                 // Must find the NavController from the Fragment
                 this.findNavController().navigate(
                     FavoritePostsOverViewFragmentDirections.actionFavoritePostsOverViewFragmentToPostDetailFragment(
@@ -91,7 +88,7 @@ class FavoritePostsOverViewFragment : Fragment() {
                 showSnackBar("items")
             })
         }
-
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -101,5 +98,19 @@ class FavoritePostsOverViewFragment : Fragment() {
             text,
             Snackbar.LENGTH_LONG
         ).show()
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }

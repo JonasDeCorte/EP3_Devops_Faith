@@ -8,14 +8,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.InputMethodManager
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentAddPostBinding
@@ -69,6 +68,7 @@ class AddPostFragment : Fragment() {
                 requireView().hideSoftInput()
             }
         })
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -107,5 +107,20 @@ class AddPostFragment : Fragment() {
         val inputMethodManager =
             context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }

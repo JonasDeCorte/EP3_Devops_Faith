@@ -1,13 +1,13 @@
 package com.example.ep3_devops_faith.ui.post.read
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.databinding.FragmentPostOverviewBinding
@@ -45,14 +45,14 @@ class PostOverviewFragment : Fragment() {
         }, FavoriteListener {
             postViewModel.favoriteClick(it)
         })
-
+        setHasOptionsMenu(true)
         // Observe the navigateToSelectedProperty LiveData and Navigate when it isn't null
         // After navigating, call displayPropertyDetailsComplete() so that the ViewModel is ready
         // for another navigation event.
 
         postViewModel.navigateToSelectedProperty.observe(viewLifecycleOwner, {
             if (null != it) {
-                if (!role.equals("Jongere")) {
+                if (!role.equals(getString(R.string.Type_Jongere))) {
                     postViewModel.saveStatus(it)
                 }
                 // Must find the NavController from the Fragment
@@ -83,11 +83,27 @@ class PostOverviewFragment : Fragment() {
 
         return binding.root
     }
+
     private fun showSnackBar(text: String) {
         Snackbar.make(
             binding.root,
             text,
             Snackbar.LENGTH_LONG
         ).show()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }

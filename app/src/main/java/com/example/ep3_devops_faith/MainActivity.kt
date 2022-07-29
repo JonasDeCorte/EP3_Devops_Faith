@@ -17,7 +17,6 @@ class MainActivity : AppCompatActivity() {
         val binding: ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         Timber.plant(Timber.DebugTree())
         setContentView(binding.root)
-
         drawerLayout = binding.drawerLayout
         val navController: NavController = this.findNavController(R.id.myNavHostFragment)
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)

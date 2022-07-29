@@ -30,6 +30,20 @@ fun TextView.setLink(item: Post) {
         text = item.Link
     }
 }
+
+@BindingAdapter("isFavJongere")
+fun ImageView.isVisible(item: Post) {
+    item.let {
+        val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        Timber.i("Role:= " + role.toString())
+        if (role.equals(context.getString(R.string.Type_Jongere))) {
+            visibility = ImageView.VISIBLE
+        } else {
+            visibility = ImageView.GONE
+        }
+    }
+}
+
 @BindingAdapter("postStatus")
 fun Button.setStatus(item: Post) {
     Timber.i(item.toString())

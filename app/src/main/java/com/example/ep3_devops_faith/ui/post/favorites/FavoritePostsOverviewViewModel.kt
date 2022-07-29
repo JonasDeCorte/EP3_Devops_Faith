@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.domain.Post
-import com.example.ep3_devops_faith.login.CredentialsManager
 import com.example.ep3_devops_faith.repository.CommentRepository
 import com.example.ep3_devops_faith.repository.FavoriteRepository
 import com.example.ep3_devops_faith.repository.PostRepository
@@ -51,24 +50,6 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
                 )
                 // add to LiveData list.
                 _items.value = _items.value?.plus(post) ?: listOf(post)
-            }
-        }
-    }
-
-    fun saveStatus(post: Post) {
-        Timber.i("Save Status")
-        viewModelScope.launch {
-            val commentsForUser = commentRepository.countForUser(post.Id,
-                CredentialsManager.cachedUserProfile?.getId()!!)
-            Timber.i("Comments for user = $commentsForUser")
-            Timber.i("postStatus = ${post.Status}")
-            if (post.Status == "NEW") {
-                Timber.i("Save Status ${post.Status} == NEW")
-                saveStatusWithRepository("READ", post)
-            }
-            if (commentsForUser > 0 && post.Status == "READ") {
-                Timber.i("Save Status ${post.Status} == READ")
-                saveStatusWithRepository("ANSWERED", post)
             }
         }
     }
@@ -151,11 +132,6 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
     private suspend fun removeFavoriteWithRepository(post: Post) {
         withContext(Dispatchers.IO) {
             favoriteRepository.delete(post)
-        }
-    }
-    private suspend fun saveStatusWithRepository(status: String, post: Post) {
-        withContext(Dispatchers.IO) {
-            repository.update(status, post)
         }
     }
 }

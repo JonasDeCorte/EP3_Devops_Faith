@@ -49,5 +49,6 @@
     <string name="Enum_Read">READ</string>
     <string name="Enum_New">NEW</string>
     <string name="Type_Jongere">Jongere</string>
+    <string name="favorite">favorite</string>
 
 </resources>

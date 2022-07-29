@@ -8,13 +8,13 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.auth0.android.Auth0
 import com.auth0.android.callback.Callback
 import com.auth0.android.management.ManagementException
@@ -67,6 +67,7 @@ class UserProfileFragment : Fragment() {
                 Timber.i("USER PROFILE HAS BEEN SAVED")
             }
         })
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -188,5 +189,20 @@ class UserProfileFragment : Fragment() {
             text,
             Snackbar.LENGTH_LONG
         ).show()
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }
