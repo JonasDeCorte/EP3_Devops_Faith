@@ -41,12 +41,12 @@ class CommentViewModel(post: Post, val database: CommentDatabaseDao, app: Applic
     }
 
     fun saveComment(message: String, postId: Long, userId: String, userEmail: String) {
+        val comment = Comment()
+        comment.Message = message
+        comment.PostId = postId
+        comment.UserId = userId
+        comment.UserEmail = userEmail
         viewModelScope.launch {
-            val comment = Comment()
-            comment.Message = message
-            comment.PostId = postId
-            comment.UserId = userId
-            comment.UserEmail = userEmail
             saveCommentWithRepository(comment)
         }
     }

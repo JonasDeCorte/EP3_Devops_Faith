@@ -36,15 +36,15 @@ class AddPostViewModel(val database: PostDatabaseDao, application: Application) 
     }
 
     fun savePost(text: String, avatar: Bitmap?, link: String?, userId: String, userEmail: String) {
+        val post = Post()
+        post.Text = text
+        post.Picture = avatar
+        post.Link = link!!
+        post.UserId = userId
+        post.UserEmail = userEmail
+        post.Status = "NEW"
+        Timber.i("Savepost $post")
         viewModelScope.launch {
-            val post = Post()
-            post.Text = text
-            post.Picture = avatar
-            post.Link = link!!
-            post.UserId = userId
-            post.UserEmail = userEmail
-            post.Status = "NEW"
-            Timber.i("Savepost $post")
             savePostWithRepository(post)
         }
     }

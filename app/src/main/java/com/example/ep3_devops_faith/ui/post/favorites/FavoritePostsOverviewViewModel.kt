@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.ep3_devops_faith.database.FaithDatabase
 import com.example.ep3_devops_faith.domain.Post
-import com.example.ep3_devops_faith.repository.CommentRepository
 import com.example.ep3_devops_faith.repository.FavoriteRepository
 import com.example.ep3_devops_faith.repository.PostRepository
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +19,6 @@ class FavoritePostsOverviewViewModel(val database: FaithDatabase, app: Applicati
     private val db = FaithDatabase.getInstance(app.applicationContext)
     private val repository = PostRepository(db)
     private val favoriteRepository = FavoriteRepository(db)
-    private val commentRepository = CommentRepository(db)
     private val _items: MutableLiveData<List<Post>> = MutableLiveData(listOf())
     val items: LiveData<List<Post>> = _items
     init {
