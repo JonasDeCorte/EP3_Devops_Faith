@@ -5,6 +5,8 @@ import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.ep3_devops_faith.database.FaithDatabase
+import com.example.ep3_devops_faith.database.comment.CommentDatabaseDao
+import com.example.ep3_devops_faith.database.comment.DatabaseComment
 import com.example.ep3_devops_faith.database.favorite.DatabaseFavorite
 import com.example.ep3_devops_faith.database.favorite.FavoriteDatabaseDao
 import com.example.ep3_devops_faith.database.post.DatabasePost
@@ -21,7 +23,11 @@ import java.io.IOException
 class FaithDatabaseTest {
     private lateinit var favoriteDatabaseDao: FavoriteDatabaseDao
     private lateinit var postDatabaseDao: PostDatabaseDao
+    private lateinit var commentDatabaseDao: CommentDatabaseDao
+
     private lateinit var database: FaithDatabase
+    private val userX: String = "UserX"
+    private val UserEmail: String = "JohnDeere@gmail.com"
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -38,6 +44,17 @@ class FaithDatabaseTest {
             .build()
         favoriteDatabaseDao = database.favoriteDatabaseDao
         postDatabaseDao = database.postDatabaseDao
+        commentDatabaseDao = database.commentDatabaseDao
+    }
+
+    private fun createDatabasePost() {
+        for (i in 1 until 6 step 1) {
+            val databasePost = DatabasePost()
+            databasePost.Text = "insertAndGetPost$i"
+            databasePost.Link = "insertAndGetPost$i"
+            postDatabaseDao.insert(databasePost)
+            println("$databasePost")
+        }
     }
 
     @After
@@ -46,54 +63,98 @@ class FaithDatabaseTest {
         database.close()
     }
 
+    private fun createDatabaseFavoritesUserX() {
+        for (i in 1 until 6 step 1) {
+            var databaseFavorite = DatabaseFavorite()
+            databaseFavorite.UserId = userX
+            databaseFavorite.PostId = i.toLong()
+            favoriteDatabaseDao.insert(databaseFavorite)
+            println("$databaseFavorite")
+        }
+    }
+
     @Test
     @Throws(Exception::class)
-    fun insertAndGetFavorite() {
-        for (i in 1 until 6 step 1) {
-            val databasePost = DatabasePost()
-            databasePost.Text = "insertAndGetPost$i"
-            databasePost.Link = "insertAndGetPost$i"
-            postDatabaseDao.insert(databasePost)
-            println("$databasePost")
-        }
+    fun insertAndGetFavoriteForUserX() {
+        createDatabasePost()
         assertEquals(5, postDatabaseDao.getDataCount())
         postDatabaseDao.getAllEntries()
-        var databaseFavorite = DatabaseFavorite()
-        databaseFavorite.UserId = "userId"
-        databaseFavorite.PostId = 1.toLong()
-        favoriteDatabaseDao.insert(databaseFavorite)
-        println("eerste db fav $databaseFavorite")
-        databaseFavorite.UserId = "user"
-        databaseFavorite.PostId = 1.toLong()
-        favoriteDatabaseDao.insert(databaseFavorite)
-        println("tweede db fav $databaseFavorite")
-        var list = favoriteDatabaseDao.getDataCountFavorites("userId")
-        assertEquals(1, list.size)
-        assertEquals(2, favoriteDatabaseDao.getDataCount())
-        databaseFavorite.UserId = "gebruiker"
-        databaseFavorite.PostId = 1.toLong()
-        favoriteDatabaseDao.insert(databaseFavorite)
-        println("derde db fav $databaseFavorite")
-        assertEquals(3, favoriteDatabaseDao.getDataCount())
-        databaseFavorite.UserId = "userId"
-        databaseFavorite.PostId = 2.toLong()
-        favoriteDatabaseDao.insert(databaseFavorite)
-        println("vierde db fav $databaseFavorite")
-        list = favoriteDatabaseDao.getDataCountFavorites("userId")
-        println("list=  $list")
-        assertEquals(2, list.size)
+        createDatabaseFavoritesUserX()
+        assertEquals(5, favoriteDatabaseDao.getDataCountFavorites(userX).size)
     }
 
     @Test
     @Throws(Exception::class)
     fun insertAndGetPost() {
-        for (i in 1 until 6 step 1) {
-            val databasePost = DatabasePost()
-            databasePost.Text = "insertAndGetPost$i"
-            databasePost.Link = "insertAndGetPost$i"
-            postDatabaseDao.insert(databasePost)
-            println("$databasePost")
-        }
+        createDatabasePost()
         assertEquals(5, postDatabaseDao.getDataCount())
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun deletePost() {
+        createDatabasePost()
+        assertEquals(5, postDatabaseDao.getDataCount())
+        postDatabaseDao.delete(postDatabaseDao.get(1.toLong()))
+        assertEquals(4, postDatabaseDao.getDataCount())
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun updatePost() {
+        createDatabasePost()
+        assertEquals(5, postDatabaseDao.getDataCount())
+        val post = postDatabaseDao.get(1.toLong())
+        post.Text = "updated db post"
+        postDatabaseDao.update(post)
+        assertEquals("updated db post", postDatabaseDao.get(1.toLong()).Text)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun addCommentForUserX() {
+        val comment = DatabaseComment(
+            Message = "comment",
+            UserEmail = UserEmail,
+            UserId = userX,
+            PostId = 1.toLong()
+        )
+        commentDatabaseDao.insert(comment)
+        val count = commentDatabaseDao.getDataCount()
+        assertEquals(1, count)
+    }
+
+    fun deleteCommentForUser() {
+        val comment = DatabaseComment(
+            Message = "comment",
+            UserEmail = UserEmail,
+            UserId = userX,
+            PostId = 1.toLong()
+        )
+        commentDatabaseDao.insert(comment)
+        var count = commentDatabaseDao.getDataCount()
+        assertEquals(1, count)
+        commentDatabaseDao.delete(comment)
+        count = commentDatabaseDao.getDataCount()
+        assertEquals(0, count)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun removefavoriteForUserX() {
+        createDatabasePost()
+        createDatabaseFavoritesUserX()
+        val dbfav = favoriteDatabaseDao.get(1.toLong(), userX)
+        favoriteDatabaseDao.delete(dbfav)
+        assertEquals(4, favoriteDatabaseDao.getDataCountFavorites(userX).size)
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun totalAmountOfFavorites() {
+        createDatabasePost()
+        createDatabaseFavoritesUserX()
+        val count = favoriteDatabaseDao.getDataCount()
+        assertEquals(5, count)
     }
 }
