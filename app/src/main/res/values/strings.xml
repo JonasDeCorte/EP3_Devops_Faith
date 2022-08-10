@@ -50,5 +50,7 @@
     <string name="Enum_New">NEW</string>
     <string name="Type_Jongere">Jongere</string>
     <string name="favorite">favorite</string>
+    <string name="login">Login</string>
+    <string name="movie">Movie</string>
 
 </resources>

@@ -16,9 +16,11 @@
         android:title="@string/add_post" />
     <item
         android:id="@+id/postOverviewFragment"
-        android:title="@string/post_overview"/>
+        android:title="@string/post_overview" />
     <item
         android:id="@+id/loginFragment"
-        android:title="Login"
-        />
+        android:title="@string/login" />
+    <item
+        android:id="@id/movieOverviewFragment"
+        android:title="@string/movie" />
 </menu>

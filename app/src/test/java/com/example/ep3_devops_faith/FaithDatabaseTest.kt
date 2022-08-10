@@ -27,7 +27,7 @@ class FaithDatabaseTest {
 
     private lateinit var database: FaithDatabase
     private val userX: String = "UserX"
-    private val UserEmail: String = "JohnDeere@gmail.com"
+    private val userEmail: String = "JohnDeere@gmail.com"
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -115,7 +115,7 @@ class FaithDatabaseTest {
     fun addCommentForUserX() {
         val comment = DatabaseComment(
             Message = "comment",
-            UserEmail = UserEmail,
+            UserEmail = userEmail,
             UserId = userX,
             PostId = 1.toLong()
         )
@@ -127,7 +127,7 @@ class FaithDatabaseTest {
     fun deleteCommentForUser() {
         val comment = DatabaseComment(
             Message = "comment",
-            UserEmail = UserEmail,
+            UserEmail = userEmail,
             UserId = userX,
             PostId = 1.toLong()
         )
