@@ -6,9 +6,6 @@
         android:title="@string/favorite"
         />
     <item
-        android:id="@+id/homeFragment"
-        android:title="@string/home" />
-    <item
         android:id="@+id/userProfileFragment"
         android:title="@string/profile" />
     <item

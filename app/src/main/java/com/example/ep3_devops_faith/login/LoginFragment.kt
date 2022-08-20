@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.navigation.Navigation
 import com.auth0.android.Auth0
 import com.auth0.android.authentication.AuthenticationAPIClient
 import com.auth0.android.authentication.AuthenticationException
@@ -44,11 +43,6 @@ class LoginFragment : Fragment() {
     private fun setClickListeners() {
         binding.buttonLogin.setOnClickListener { loginWithBrowser() }
         binding.buttonLogout.setOnClickListener { logout() }
-        // binding.buttonGetMetadata.setOnClickListener { getUserMetadata() }
-        // binding.buttonPatchMetadata.setOnClickListener { patchUserMetadata() }
-        binding.btnHome.setOnClickListener(
-            Navigation.createNavigateOnClickListener(R.id.action_loginFragment_to_homeFragment)
-        )
     }
     private fun checkIfToken() {
         val token = CredentialsManager.getAccessToken(requireContext())

@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.ep3_devops_faith.R
 import com.example.ep3_devops_faith.databinding.FragmentMovieOverviewBinding
+import com.example.ep3_devops_faith.login.CredentialsManager
 
 class MovieOverviewFragment : Fragment() {
     /**
@@ -30,11 +33,20 @@ class MovieOverviewFragment : Fragment() {
         setHasOptionsMenu(true)
         return binding.root
     }
-    /**
-     * Inflates the overflow menu that contains filtering options.
-     */
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.overflow_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.overflow_menu, menu)
+        val role = CredentialsManager.cachedUserProfile!!.getUserMetadata().get("Role") as String?
+        if (!role.equals(getString(R.string.Type_Jongere))) {
+            menu.findItem(R.id.favoritePostsOverViewFragment).setVisible(false)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(
+            item,
+            requireView().findNavController()) ||
+                super.onOptionsItemSelected(item)
     }
 }

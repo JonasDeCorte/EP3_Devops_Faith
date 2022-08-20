@@ -10,9 +10,6 @@
         android:title="Login"
         />
     <item
-        android:id="@+id/homeFragment"
-        android:title="@string/home" />
-    <item
         android:id="@+id/userProfileFragment"
         android:title="@string/profile" />
     <item
@@ -21,5 +18,8 @@
     <item
         android:id="@+id/postOverviewFragment"
         android:title="@string/post_overview"/>
+    <item
+        android:id="@id/movieOverviewFragment"
+        android:title="@string/movie" />
 </group>
 </menu>
