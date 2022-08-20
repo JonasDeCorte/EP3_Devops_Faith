@@ -59,9 +59,7 @@ class LoginFragment : Fragment() {
         binding.metadataPanel.isVisible = CredentialsManager.cachedCredentials != null
         binding.buttonLogin.isEnabled = CredentialsManager.cachedCredentials == null
         binding.userProfile.isVisible = CredentialsManager.cachedCredentials != null
-        binding.userProfile.text =
-            "Name: ${CredentialsManager.cachedUserProfile?.name ?: ""}\n" +
-                    "Email: ${CredentialsManager.cachedUserProfile?.email ?: ""}"
+        binding.userProfile.text = "Email: ${CredentialsManager.cachedUserProfile?.email ?: ""}"
     }
 private fun loginWithBrowser() {
     // Setup the WebAuthProvider, using the custom scheme and scope.
