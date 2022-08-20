@@ -83,7 +83,7 @@ fun bindRecyclerViewPost(recyclerView: RecyclerView, data: List<Post>?) {
         Timber.i("bindRecyclerViewPost=== $data")
         return
     }
-    Timber.i("LIST IS NOOOOOOT EMPTY")
+    Timber.i("LIST IS NOT EMPTY")
     Timber.i(" bindRecyclerViewPost ==== $data")
     val adapter = recyclerView.adapter as PostAdapter
     adapter.submitList(data)

@@ -47,11 +47,11 @@ class ViewHolder(val binding: CommentsBinding) : RecyclerView.ViewHolder(binding
 
 class PostDiffCallback : DiffUtil.ItemCallback<Comment>() {
     override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem.Id == newItem.Id
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean {
-        return oldItem == newItem
+        return oldItem.Id == newItem.Id
     }
 }
 

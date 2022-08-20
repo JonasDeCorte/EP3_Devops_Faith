@@ -47,11 +47,11 @@ class ViewHolder(val binding: PostListItemBinding) : RecyclerView.ViewHolder(bin
 
 class PostDiffCallback : DiffUtil.ItemCallback<Post>() {
     override fun areItemsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem.Id == newItem.Id
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: Post, newItem: Post): Boolean {
-        return oldItem == newItem
+        return oldItem.Id == newItem.Id
     }
 }
 
